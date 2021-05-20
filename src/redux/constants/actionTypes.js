@@ -1,4 +1,4 @@
-export default {
+const actionTypes = {
   OPEN_CAMERA: "OPEN_CAMERA",
   CLOSE_CAMERA: "CLOSE_CAMERA",
   SET_IMAGES: "SET_IMAGES",
@@ -6,4 +6,8 @@ export default {
   TOGGLE_PREVIEW_MENU: "TOGGLE_PREVIEW_MENU",
   REMOVE_PHOTO: "REMOVE_PHOTO",
   MOVE_IMAGES: "MOVE_IMAGES",
+  IMAGES_UPLOADED: "IMAGES_UPLOADED",
+  SET_PREV_IMAGES: "SET_PREV_IMAGES",
 };
+
+export default actionTypes;

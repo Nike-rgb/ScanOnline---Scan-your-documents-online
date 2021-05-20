@@ -5,8 +5,7 @@ import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
 import ImageIcon from "@material-ui/icons/Image";
 import IconButton from "@material-ui/core/IconButton";
-import Tooltip from "@material-ui/core/Tooltip";
-import { togglePreviewMenu } from "../redux/actions/previewMenuActions";
+import { togglePreviewMenu } from "../redux/actions/cameraActions";
 import { useDispatch, useSelector } from "react-redux";
 
 const useStyles = makeStyles((theme) => ({
@@ -22,12 +21,13 @@ const useStyles = makeStyles((theme) => ({
   title: {
     flexGrow: 1,
   },
+  previewMenuBtn: {
+    color: "white",
+  },
 }));
 
-export default function ButtonAppBar() {
-  const previewMenuOpen = useSelector(
-    (state) => state.previewMenu.previewMenuOpen
-  );
+export default function Navbar() {
+  const imagesUploaded = useSelector((state) => state.camera.imagesUploaded);
   const classes = useStyles();
   const dispatch = useDispatch();
   const handleTogglePreviewMenu = () => {
@@ -40,14 +40,14 @@ export default function ButtonAppBar() {
           <Typography variant="h6" className={classes.title}>
             ScannerOnline
           </Typography>
-          <Tooltip title={previewMenuOpen ? "Close" : "Edit and delete images"}>
-            <IconButton
-              aria-label="open-captured-images"
-              onClick={handleTogglePreviewMenu}
-            >
-              <ImageIcon style={{ fill: "white" }} />
-            </IconButton>
-          </Tooltip>
+          <IconButton
+            className={classes.previewMenuBtn}
+            disabled={imagesUploaded ? false : true}
+            aria-label="open-captured-images"
+            onClick={handleTogglePreviewMenu}
+          >
+            <ImageIcon />
+          </IconButton>
         </Toolbar>
       </AppBar>
     </div>

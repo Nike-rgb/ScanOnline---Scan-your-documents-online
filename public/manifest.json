@@ -1,0 +1,15 @@
+{
+  "short_name": "PdfOnline",
+  "name": "Scan your documents online",
+  "icons": [
+    {
+      "src": "images/playstore.png",
+      "type": "image/png",
+      "sizes": "1024x1024"
+    }
+  ],
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#9a30b5",
+  "background_color": "#ffffff"
+}

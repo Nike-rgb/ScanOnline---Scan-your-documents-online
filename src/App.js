@@ -7,9 +7,7 @@ import { useSelector } from "react-redux";
 
 export default function App(props) {
   const imagesUploaded = useSelector((state) => state.camera.imagesUploaded);
-  const previewMenuOpen = useSelector(
-    (state) => state.previewMenu.previewMenuOpen
-  );
+  const previewMenuOpen = useSelector((state) => state.camera.previewMenuOpen);
   const open = useSelector((state) => state.camera.cameraOpen);
   return (
     <>

@@ -19,6 +19,12 @@ export function addNewPicture(data) {
   };
 }
 
+export function togglePreviewMenu() {
+  return {
+    type: actionTypes.TOGGLE_PREVIEW_MENU,
+  };
+}
+
 export function removePhoto(index) {
   return {
     type: actionTypes.REMOVE_PHOTO,
@@ -30,5 +36,17 @@ export function moveImages(rearrangeOrder) {
   return {
     type: actionTypes.MOVE_IMAGES,
     data: rearrangeOrder,
+  };
+}
+
+export function setImagesUploaded() {
+  return {
+    type: actionTypes.IMAGES_UPLOADED,
+  };
+}
+
+export function setPrevImages() {
+  return {
+    type: actionTypes.SET_PREV_IMAGES,
   };
 }
