@@ -1,0 +1,8 @@
+* {
+  margin: 0;
+  box-sizing: border-box;
+}
+
+.preview-image:hover {
+  border: #464c4b solid 4px;
+}
