@@ -17,6 +17,7 @@ import CameraIcon from "@material-ui/icons/Camera";
 import Slide from "@material-ui/core/Slide";
 import { forwardRef, useState, useEffect } from "react";
 import cat from "../images/cat.svg";
+import { clear, get } from "idb-keyval";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -24,13 +25,14 @@ const useStyles = makeStyles((theme) => ({
     maxWidth: 500,
     width: "60%",
     margin: "auto",
-    marginTop: 320,
+    top: 320,
     position: "relative",
     boxSizing: "border-box",
+    minWidth: 320,
     [theme.breakpoints.down("xs")]: {
       width: "90%",
       height: 200,
-      marginTop: 200,
+      top: "40%",
     },
   },
   instruction: {
@@ -100,7 +102,9 @@ export default function LandingPage(props) {
   const dispatch = useDispatch();
   const [open, setOpen] = useState(false);
   useEffect(() => {
-    if (localStorage.getItem("images")) setOpen(true);
+    get("images").then((val) => {
+      if (val) setOpen(true);
+    });
   }, []);
   const handleOpenCamera = () => {
     dispatch(openCamera());
@@ -108,10 +112,12 @@ export default function LandingPage(props) {
   const handleCloseAlert = () => {
     setOpen(false);
     dispatch(setImagesUploaded());
-    dispatch(setPrevImages());
+    get("images").then((images) => {
+      dispatch(setPrevImages(images));
+    });
   };
   const handleDeleteFromLocal = () => {
-    localStorage.clear();
+    clear();
     setOpen(false);
   };
   return (
@@ -157,6 +163,8 @@ export default function LandingPage(props) {
               color: "rgba(0, 0, 0, 0.5)",
               textDecoration: "none",
             }}
+            target="_blank"
+            rel="noreferrer"
             href="https://www.freepik.com/vectors/background"
           >
             Background vector created by nizovatina
@@ -180,7 +188,7 @@ export default function LandingPage(props) {
             onClick={handleOpenCamera}
             variant="contained"
           >
-            Get started
+            Start scanning
           </Button>
         </div>
       </Paper>

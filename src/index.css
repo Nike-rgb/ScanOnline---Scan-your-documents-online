@@ -3,6 +3,24 @@
   box-sizing: border-box;
 }
 
+html,
+body,
+#root {
+  height: 100%;
+  width: 100%;
+}
+
 .preview-image:hover {
   border: #222f41 solid 3px;
+}
+
+.pig {
+  transition: transform 1.5s ease;
+  animation: shake 1.5s ease infinite;
+}
+
+@keyframes shake {
+  50% {
+    transform: scale(1.2);
+  }
 }

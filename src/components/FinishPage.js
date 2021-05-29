@@ -13,15 +13,14 @@ const useStyles = makeStyles((theme) => ({
     maxWidth: 500,
     width: "60%",
     margin: "auto",
-    marginTop: 320,
+    minWidth: 320,
+    top: 320,
     position: "relative",
     boxSizing: "border-box",
     [theme.breakpoints.down("xs")]: {
       width: "90%",
       height: 200,
-      position: "absolute",
-      bottom: 20,
-      left: "5%",
+      top: "40%",
     },
   },
   instruction: {
@@ -70,6 +69,9 @@ export default function LandingPage(props) {
   const handleOpenCamera = () => {
     dispatch(openCamera());
   };
+  const openSettings = () => {
+    props.setFinishing(true);
+  };
   return (
     <>
       <Grow in={true}>
@@ -89,6 +91,7 @@ export default function LandingPage(props) {
               color="primary"
               className={classes.finishBtn}
               variant="contained"
+              onClick={openSettings}
             >
               Create PDF
             </Button>

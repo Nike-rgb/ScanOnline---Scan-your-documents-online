@@ -16,6 +16,7 @@ const theme = createMuiTheme({
       lightIcon: "#fb118e",
       darkIcon: "#292a31",
       success: "#24b56b",
+      danger: "#f11010",
     },
   },
 });

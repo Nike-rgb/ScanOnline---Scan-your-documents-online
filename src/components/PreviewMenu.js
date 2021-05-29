@@ -6,16 +6,20 @@ import { useState, useEffect } from "react";
 import IconButton from "@material-ui/core/IconButton";
 import { useDispatch, useSelector } from "react-redux";
 import CloseIcon from "@material-ui/icons/Close";
+import SickCat from "../images/sickcat.svg";
 import { moveImages, togglePreviewMenu } from "../redux/actions/cameraActions";
-import Typography from "@material-ui/core/Typography";
+import { set } from "idb-keyval";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
     position: "absolute",
     top: 50,
     right: "2%",
-    height: 400,
-    zIndex: 2,
+    height: 290,
+    zIndex: 4,
+    [theme.breakpoints.down("xs")]: {
+      height: 425,
+    },
   },
   closeBtnContainer: {
     position: "absolute",
@@ -27,8 +31,8 @@ const useStyles = makeStyles((theme) => ({
   grid: {
     gridTemplateColumns: "120px 120px 120px 120px 120px",
     position: "relative",
-    top: "10%",
-    padding: 10,
+    top: "8%",
+    padding: 15,
     bottom: 0,
     justifyItems: "center",
     gap: 5,
@@ -40,18 +44,37 @@ const useStyles = makeStyles((theme) => ({
       gridTemplateColumns: "120px 120px",
     },
   },
-  instructions: {
-    padding: 5,
-    width: "100%",
+  clearBtn: {
+    background: theme.palette.secondary.danger,
     position: "absolute",
+    bottom: 10,
+    right: 15,
+    padding: 6,
+    "&:hover": {
+      background: "#da0f0f",
+    },
+  },
+  clearBtnLabel: {
+    fontSize: 12,
+  },
+  emptyIconContainer: {
+    padding: 10,
+    top: "30%",
+    position: "absolute",
+    width: "100%",
     textAlign: "center",
+  },
+  sickCatImage: {
+    position: "absolute",
+    top: "110%",
+    width: "50%",
+    left: "25%",
   },
 }));
 
-const localDB = window.localStorage;
 function saveToLocal(arr) {
   if (!arr.length) return;
-  localDB.setItem("images", JSON.stringify(arr));
+  return set("images", arr);
 }
 
 export default function PreviewMenu(props) {
@@ -61,7 +84,6 @@ export default function PreviewMenu(props) {
   useEffect(() => {
     saveToLocal(scannedImages);
   }, [scannedImages]);
-
   const [selectedImage, setSelectedImage] = useState(0);
   const [rearrangeOrder, setRearrangeOrder] = useState({});
   const handleTogglePreviewMenu = () => {
@@ -72,18 +94,25 @@ export default function PreviewMenu(props) {
       "src" in rearrangeOrder &&
       "dest" in rearrangeOrder &&
       rearrangeOrder.dest !== rearrangeOrder.src
-    )
+    ) {
       dispatch(moveImages(rearrangeOrder));
+      setRearrangeOrder({});
+    }
   }, [rearrangeOrder, dispatch]);
   return (
     <>
       <Grow in={true}>
         <Paper className={classes.paper} elevation={10}>
-          <div className={classes.instructions}>
-            <Typography variant="h6" color="initial">
-              Click on image to edit/remove. Drag to reorder.
-            </Typography>
-          </div>
+          <Grow in={scannedImages.length === 0}>
+            <div className={classes.emptyIconContainer}>
+              <img
+                src={SickCat}
+                alt="sick cat"
+                className={classes.sickCatImage}
+              />
+              You don't have any photos.
+            </div>
+          </Grow>
           <div className={classes.closeBtnContainer}>
             <IconButton
               aria-label="close-menu"

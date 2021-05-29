@@ -13,7 +13,7 @@ const useStyles = makeStyles((theme) => ({
     flexGrow: 1,
   },
   navBar: {
-    zIndex: 0,
+    zIndex: 3,
   },
   menuButton: {
     marginRight: theme.spacing(2),
@@ -24,9 +24,12 @@ const useStyles = makeStyles((theme) => ({
   previewMenuBtn: {
     color: "white",
   },
+  numberBadge: {
+    background: theme.palette.secondary.icon,
+  },
 }));
 
-export default function Navbar() {
+export default function Navbar(props) {
   const imagesUploaded = useSelector((state) => state.camera.imagesUploaded);
   const classes = useStyles();
   const dispatch = useDispatch();
@@ -38,11 +41,11 @@ export default function Navbar() {
       <AppBar className={classes.navBar} position="fixed">
         <Toolbar>
           <Typography variant="h6" className={classes.title}>
-            ScannerOnline
+            PdfOnline
           </Typography>
           <IconButton
             className={classes.previewMenuBtn}
-            disabled={imagesUploaded ? false : true}
+            disabled={imagesUploaded && !props.finishing ? false : true}
             aria-label="open-captured-images"
             onClick={handleTogglePreviewMenu}
           >

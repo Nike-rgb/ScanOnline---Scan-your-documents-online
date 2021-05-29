@@ -12,10 +12,18 @@ export function closeCamera() {
   };
 }
 
-export function addNewPicture(data) {
+export function addNewPicture(data, index) {
   return {
     type: actionTypes.ADD_NEW_PICTURE,
     data,
+  };
+}
+
+export function addEditedPicture(data, index) {
+  return {
+    type: actionTypes.ADD_EDITED_PICTURE,
+    data,
+    index,
   };
 }
 
@@ -45,8 +53,42 @@ export function setImagesUploaded() {
   };
 }
 
-export function setPrevImages() {
+export function setPrevImages(images) {
   return {
     type: actionTypes.SET_PREV_IMAGES,
+    data: images,
+  };
+}
+
+export function loadEditor(data) {
+  return {
+    type: actionTypes.LOAD_EDITOR,
+    data,
+  };
+}
+
+export function closeEditor() {
+  return {
+    type: actionTypes.CLOSE_EDITOR,
+  };
+}
+
+export function addEditIndex(index) {
+  return {
+    type: actionTypes.ADD_EDIT_INDEX,
+    data: index,
+  };
+}
+
+export function removeEditIndex() {
+  return {
+    type: actionTypes.REMOVE_EDIT_INDEX,
+  };
+}
+
+export function setAlertMsg(msg) {
+  return {
+    type: actionTypes.SET_ALERT_MSG,
+    data: msg,
   };
 }

@@ -3,19 +3,24 @@ import Grow from "@material-ui/core/Grow";
 import EditIcon from "@material-ui/icons/Edit";
 import IconButton from "@material-ui/core/IconButton";
 import DeleteIcon from "@material-ui/icons/Delete";
-import { removePhoto } from "../redux/actions/cameraActions";
+import {
+  removePhoto,
+  loadEditor,
+  addEditIndex,
+} from "../redux/actions/cameraActions";
 import { useDispatch } from "react-redux";
 import { useState } from "react";
 
 const useStyles = makeStyles((theme) => ({
   previewContainer: {
     height: 120,
-    width: 100,
+    width: 90,
     position: "relative",
+    transition: "transform 0.1s ease, opacity 0.1s ease",
   },
   preview: {
-    height: 100,
-    width: 100,
+    height: 85,
+    width: 85,
     cursor: "pointer",
     position: "absolute",
     top: 0,
@@ -24,6 +29,7 @@ const useStyles = makeStyles((theme) => ({
     transition: "transform 1s ease",
     border: "solid 2px #a718f733",
     boxShadow: "0px 5px 5px 1px #00000021",
+    borderRadius: 5,
   },
   previewNumber: {
     position: "absolute",
@@ -34,12 +40,13 @@ const useStyles = makeStyles((theme) => ({
     color: "white",
     zIndex: 1,
     fontSize: 14,
+    borderRadius: 5,
   },
   toolsContainer: {
     position: "absolute",
     width: "100%",
-    height: 40,
-    top: 100,
+    height: 35,
+    top: 85,
     left: 0,
   },
   tool: {
@@ -63,7 +70,7 @@ export default function Preview(props) {
     props.setSelectedImage(props.index);
   };
   const handleRemovePhoto = () => {
-    dispatch(removePhoto(props.index));
+    setTimeout(() => dispatch(removePhoto(props.index)), 800);
   };
   const handleDragEnter = () => {
     setDraggedOver(true);
@@ -80,6 +87,10 @@ export default function Preview(props) {
   const handleDrop = () => {
     props.setRearrangeOrder((prev) => ({ ...prev, dest: props.index }));
     setDraggedOver(false);
+  };
+  const handleEditPhoto = () => {
+    dispatch(loadEditor(props.src));
+    dispatch(addEditIndex(props.index));
   };
   return (
     <>
@@ -106,7 +117,7 @@ export default function Preview(props) {
                 <IconButton
                   className={classes.tool}
                   aria-label="edit-photo"
-                  onClick={() => {}}
+                  onClick={handleEditPhoto}
                 >
                   <EditIcon />
                 </IconButton>
