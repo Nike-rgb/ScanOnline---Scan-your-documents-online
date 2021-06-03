@@ -114,7 +114,7 @@ export default function Camera(props) {
     const video = videoRef.current;
     if (props.cameraOpen) {
       navigator.mediaDevices
-        .getUserMedia({ video: true, audio: false })
+        .getUserMedia({ video: { facingMode: "environment" }, audio: false })
         .then(function (stream) {
           video.srcObject = stream;
           video.play();

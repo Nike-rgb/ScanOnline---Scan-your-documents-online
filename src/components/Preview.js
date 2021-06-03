@@ -16,7 +16,7 @@ const useStyles = makeStyles((theme) => ({
     height: 120,
     width: 90,
     position: "relative",
-    transition: "transform 0.1s ease, opacity 0.1s ease",
+    transition: "transform 1s ease, opacity 0.1s ease",
   },
   preview: {
     height: 85,
@@ -34,8 +34,8 @@ const useStyles = makeStyles((theme) => ({
   previewNumber: {
     position: "absolute",
     padding: 4,
-    top: 0,
-    left: 0,
+    top: 3,
+    left: 3,
     background: "rgba(0, 0, 0, 0.2)",
     color: "white",
     zIndex: 1,
@@ -55,10 +55,6 @@ const useStyles = makeStyles((theme) => ({
     "&:hover": {
       background: "none",
     },
-  },
-  draggedOver: {
-    border: `${theme.palette.secondary.success} solid 3px`,
-    transform: "translateX(15%)",
   },
 }));
 
@@ -95,42 +91,46 @@ export default function Preview(props) {
   return (
     <>
       <Grow in={true}>
-        <div className={classes.previewContainer}>
-          <div className={classes.previewNumber}>{props.index + 1}</div>
-          <img
-            draggable
-            onClick={handleShowTools}
-            onDragStart={handleDragStart}
-            onDragEnter={handleDragEnter}
-            onDragOver={handleDragOver}
-            onDrop={handleDrop}
-            onDragLeave={handleDragLeave}
-            alt={`Scan ${props.index + 1}`}
-            className={`${classes.preview} preview-image ${
-              draggedOver ? classes.draggedOver : ""
+        <div>
+          <div
+            className={`${classes.previewContainer} ${
+              draggedOver ? "draggedOver" : ""
             }`}
-            src={props.src}
-          />
-          {props.showTools && (
-            <Grow in={true}>
-              <div className={classes.toolsContainer}>
-                <IconButton
-                  className={classes.tool}
-                  aria-label="edit-photo"
-                  onClick={handleEditPhoto}
-                >
-                  <EditIcon />
-                </IconButton>
-                <IconButton
-                  className={classes.tool}
-                  aria-label="remove-photo"
-                  onClick={handleRemovePhoto}
-                >
-                  <DeleteIcon />
-                </IconButton>
-              </div>
-            </Grow>
-          )}
+          >
+            <div className={classes.previewNumber}>{props.index + 1}</div>
+            <img
+              draggable
+              onClick={handleShowTools}
+              onDragStart={handleDragStart}
+              onDragEnter={handleDragEnter}
+              onDragOver={handleDragOver}
+              onDrop={handleDrop}
+              onDragLeave={handleDragLeave}
+              alt={`Scan ${props.index + 1}`}
+              className={`${classes.preview} preview-image`}
+              src={props.src}
+            />
+            {props.showTools && (
+              <Grow in={true}>
+                <div className={classes.toolsContainer}>
+                  <IconButton
+                    className={classes.tool}
+                    aria-label="edit-photo"
+                    onClick={handleEditPhoto}
+                  >
+                    <EditIcon />
+                  </IconButton>
+                  <IconButton
+                    className={classes.tool}
+                    aria-label="remove-photo"
+                    onClick={handleRemovePhoto}
+                  >
+                    <DeleteIcon />
+                  </IconButton>
+                </div>
+              </Grow>
+            )}
+          </div>
         </div>
       </Grow>
     </>

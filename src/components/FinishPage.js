@@ -2,10 +2,11 @@ import Paper from "@material-ui/core/Paper";
 import { makeStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { openCamera } from "../redux/actions/cameraActions";
 import CameraIcon from "@material-ui/icons/Camera";
 import Grow from "@material-ui/core/Grow";
+import { useEffect, useState } from "react";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -66,9 +67,16 @@ const useStyles = makeStyles((theme) => ({
 export default function LandingPage(props) {
   const classes = useStyles();
   const dispatch = useDispatch();
+  const [btnValid, setBtnValid] = useState(true);
   const handleOpenCamera = () => {
     dispatch(openCamera());
   };
+  const scannedImages = useSelector((state) => state.camera.scannedImages);
+  useEffect(() => {
+    if (!scannedImages.length) {
+      setBtnValid(false);
+    } else setBtnValid(true);
+  }, [scannedImages]);
   const openSettings = () => {
     props.setFinishing(true);
   };
@@ -91,6 +99,7 @@ export default function LandingPage(props) {
               color="primary"
               className={classes.finishBtn}
               variant="contained"
+              disabled={!btnValid}
               onClick={openSettings}
             >
               Create PDF

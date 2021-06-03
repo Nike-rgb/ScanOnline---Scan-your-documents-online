@@ -12,24 +12,17 @@ import Paper from "@material-ui/core/Paper";
 import Grow from "@material-ui/core/Grow";
 import FavoriteIcon from "@material-ui/icons/Favorite";
 import GetAppIcon from "@material-ui/icons/GetApp";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
-import Checkbox from "@material-ui/core/Checkbox";
-import Dialog from "@material-ui/core/Dialog";
-import DialogActions from "@material-ui/core/DialogActions";
-import DialogContent from "@material-ui/core/DialogContent";
-import DialogContentText from "@material-ui/core/DialogContentText";
-import DialogTitle from "@material-ui/core/DialogTitle";
-import Slide from "@material-ui/core/Slide";
-import frog from "../images/frog.svg";
+import AttributeConfirm from "./AttributeConfirm";
 import CloseIcon from "@material-ui/icons/Close";
 import IconButton from "@material-ui/core/IconButton";
 import byebye from "../images/byebye.svg";
+import { del, set, get } from "idb-keyval";
 
 const useStyles = makeStyles((theme) => ({
   container: {
     height: 350,
-    width: "50%",
-    left: "25%",
+    width: "60%",
+    left: "20%",
     top: 160,
     minWidth: 320,
     position: "absolute",
@@ -42,8 +35,8 @@ const useStyles = makeStyles((theme) => ({
       minHeight: 350,
     },
     [theme.breakpoints.down("xs")]: {
-      height: 350,
-      top: "20%",
+      height: 400,
+      top: "15%",
     },
   },
   root: {
@@ -98,14 +91,14 @@ const useStyles = makeStyles((theme) => ({
     textAlign: "center",
     border: "3px solid #844494",
     borderRadius: 5,
-    width: "80%",
+    width: "40%",
     padding: 5,
     position: "absolute",
     bottom: "15%",
     fontSize: 17,
-    left: "10%",
+    left: "30%",
     [theme.breakpoints.down("sm")]: {
-      width: "80%",
+      width: "70%",
       fontSize: 15,
       marginTop: 30,
       padding: 5,
@@ -117,59 +110,27 @@ const useStyles = makeStyles((theme) => ({
     bottom: 5,
     right: 5,
   },
-  resetBtn: {
-    background: theme.palette.secondary.danger,
-    "&:hover": {
-      background: "#c51515",
-    },
-  },
   downloadBtn: {
     background: theme.palette.secondary.success,
     "&:hover": {
       background: "#1d9a5a",
     },
   },
-  alert: {
-    position: "relative",
-    height: 300,
-    width: 500,
-    [theme.breakpoints.down("xs")]: {
-      width: "90%",
-      margin: "auto",
-      height: 350,
-    },
-  },
-  frogIcon: {
-    width: "25%",
-    position: "absolute",
-    right: 5,
-    top: 10,
-    [theme.breakpoints.down("xs")]: {},
-  },
-  dialogActionArea: {
-    position: "absolute",
-    width: "90%",
-    right: "5%",
-    top: 50,
-  },
-  dialogText: {
-    fontSize: 15,
-    [theme.breakpoints.down("xs")]: {
-      fontSize: 14,
-    },
-  },
   closingWords: {
     position: "absolute",
     width: "100%",
     textAlign: "center",
-    top: "40%",
+    top: "38%",
+    right: 5,
     fontWeight: "bold",
     color: theme.palette.secondary.success,
-    [theme.breakpoints.down("xs")]: {
+    [theme.breakpoints.down("sm")]: {
       width: "50%",
       right: 5,
-      fontSize: 14,
       top: "25%",
+    },
+    [theme.breakpoints.down("xs")]: {
+      fontSize: 14,
     },
   },
   closeBtn: {
@@ -179,21 +140,17 @@ const useStyles = makeStyles((theme) => ({
   },
   byeImg: {
     position: "absolute",
-    bottom: 0,
-    width: "30%",
-    left: "15%",
+    top: 30,
+    width: "50%",
+    left: "20%",
     borderRadius: "60%",
-    [theme.breakpoints.down("xs")]: {
-      left: "55%",
-      width: "40%",
-      bottom: "20%",
+    [theme.breakpoints.down("sm")]: {
+      left: "10%",
+      top: 50,
+      width: "80%",
     },
   },
 }));
-
-const Transition = React.forwardRef(function Transition(props, ref) {
-  return <Slide direction="down" ref={ref} {...props} />;
-});
 
 export default function PdfSettings(props) {
   const theme = useTheme();
@@ -208,6 +165,9 @@ export default function PdfSettings(props) {
   const [attributed, setAttributed] = React.useState(false);
   const [btnValid, setBtnValid] = React.useState(false);
   const [open, setOpen] = React.useState(false);
+  const [downloading, setDownloading] = React.useState(false);
+  const [settings, setSettings] = React.useState({});
+  const [title, setTitle] = React.useState(null);
   const steps = ["Title of PDF", "Your Name", "Roll n.o", "Faculty"];
   const stepLabels = [
     "This is the title that appears on the front of your pdf (Required)",
@@ -215,29 +175,28 @@ export default function PdfSettings(props) {
     "Your teacher might wanna know this in your assignment. (optional)",
     "Your faculty of study. (optional)",
   ];
-
   const handleClose = () => {
     props.setFinishing(false);
   };
-
   const handleNext = () => {
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
+    if (activeStep === steps.length - 1) {
+      const title = titleRef.current.value;
+      const name = nameRef.current.value;
+      const roll = rollRef.current.value;
+      const faculty = facultyRef.current.value;
+      const settings = { title, name, roll, faculty, attributed };
+      set("settings", settings);
+      sessionStorage.setItem("title", title);
+    }
   };
-
   const handleBack = () => {
     setActiveStep((prevActiveStep) => prevActiveStep - 1);
   };
 
-  const handleAttributeUs = () => {
-    setAttributed((prev) => !prev);
-    setTimeout(() => setOpen(false), 600);
-  };
-
-  const handleDontAttribute = () => {
-    setOpen(false);
-  };
-
   const handleDownload = () => {
+    setDownloading(true);
+    setTimeout(() => setDownloading(false), 1500);
     const title = titleRef.current.value;
     const name = nameRef.current.value;
     const roll = rollRef.current.value;
@@ -249,87 +208,45 @@ export default function PdfSettings(props) {
       })),
       settings
     );
+    del("images");
   };
 
   React.useEffect(() => {
     if (activeStep === steps.length) setOpen(true);
   }, [activeStep, steps.length]);
 
+  React.useEffect(() => {
+    (async () => {
+      const settings = await get("settings");
+      if (!settings) return setSettings({});
+      setSettings(settings);
+      let title = sessionStorage.getItem("title");
+      if (title) {
+        setTitle(title);
+        setBtnValid(true);
+      }
+    })();
+  }, []);
+
   return (
     <>
-      <Dialog
+      <AttributeConfirm
         open={open}
-        classes={{ paper: classes.alert }}
-        TransitionComponent={Transition}
-        transitionDuration={500}
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
-      >
-        <div>
-          <img alt="frog-on-a-leat" className={classes.frogIcon} src={frog} />
-        </div>
-        <div className={classes.dialogActionArea}>
-          <DialogTitle id="alert-dialog-title">Attribute us?</DialogTitle>
-          <DialogContent>
-            <DialogContentText
-              className={classes.dialogText}
-              id="alert-dialog-description"
-            >
-              {`PdfOnline is a labour of love which took hours & hours worth of work, and it will always be
-      absolutely free. It's not required, but we'd really appreciate if you would allow us to include
-      our name in your creation. Thanks.`}
-            </DialogContentText>
-          </DialogContent>
-          <DialogActions>
-            <FormControlLabel
-              control={
-                <Checkbox
-                  checked={attributed}
-                  onChange={handleAttributeUs}
-                  name="attribute-us"
-                  color="primary"
-                />
-              }
-              label={attributed ? "Thanks!" : "Attribute us?"}
-            />
-            <Button
-              color="primary"
-              className={classes.resetBtn}
-              variant="contained"
-              onClick={handleDontAttribute}
-            >
-              Nope
-            </Button>
-          </DialogActions>
-        </div>
-        <div
-          style={{
-            position: "absolute",
-            bottom: 0,
-            padding: 5,
-            fontSize: 5,
-          }}
-        >
-          <a
-            style={{
-              color: "rgba(0, 0, 0, 0.5)",
-              textDecoration: "none",
-            }}
-            target="_blank"
-            rel="noreferrer"
-            href="https://www.freepik.com/vectors/background"
-          >
-            Background vector created by brgfx
-          </a>
-        </div>
-      </Dialog>
+        setOpen={setOpen}
+        handle
+        setAttributed={setAttributed}
+      />
       <Grow in={true}>
         <Paper className={classes.container} elevation={4}>
           {activeStep === steps.length && (
             <>
-              <img src={byebye} alt="cat in a box" className={classes.byeImg} />
               <div className={classes.closingWords}>
                 Yay! your PDF is now ready for download.<br></br>
+                <img
+                  src={byebye}
+                  alt="cat in a box"
+                  className={classes.byeImg}
+                />
               </div>
             </>
           )}
@@ -372,6 +289,7 @@ export default function PdfSettings(props) {
                 if (e.currentTarget.value) setBtnValid(true);
                 else setBtnValid(false);
               }}
+              defaultValue={title ? title : ""}
               ref={titleRef}
               style={{ display: activeStep === 0 ? "inline" : "none" }}
               spellCheck={false}
@@ -380,6 +298,7 @@ export default function PdfSettings(props) {
             />
             <input
               ref={nameRef}
+              defaultValue={settings.name ? settings.name : ""}
               style={{ display: activeStep === 1 ? "inline" : "none" }}
               spellCheck={false}
               className={classes.formInput}
@@ -387,6 +306,7 @@ export default function PdfSettings(props) {
             />
             <input
               ref={rollRef}
+              defaultValue={settings.roll ? settings.roll : ""}
               style={{ display: activeStep === 2 ? "inline" : "none" }}
               spellCheck={false}
               className={classes.formInput}
@@ -394,6 +314,7 @@ export default function PdfSettings(props) {
             />
             <input
               ref={facultyRef}
+              defaultValue={settings.faculty ? settings.faculty : ""}
               style={{ display: activeStep === 3 ? "inline" : "none" }}
               spellCheck={false}
               className={classes.formInput}
@@ -430,7 +351,7 @@ export default function PdfSettings(props) {
                   color="secondary"
                   style={{ fontSize: 12 }}
                 >
-                  Download your PDF{" "}
+                  {downloading ? "Downloading" : "Download your PDF"}
                   <GetAppIcon style={{ position: "relative ", left: 10 }} />
                 </Button>
               </>

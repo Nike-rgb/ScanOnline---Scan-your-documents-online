@@ -6,6 +6,7 @@ import store from "./store";
 import { Provider } from "react-redux";
 import { ThemeProvider } from "@material-ui/core/styles";
 import theme from "./theme/theme";
+import * as serviceWorker from "./serviceWorkerRegistration";
 
 ReactDOM.render(
   <ThemeProvider theme={theme}>
@@ -16,3 +17,5 @@ ReactDOM.render(
   </ThemeProvider>,
   document.getElementById("root")
 );
+
+serviceWorker.unregister();

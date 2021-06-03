@@ -7,13 +7,19 @@ import ImageIcon from "@material-ui/icons/Image";
 import IconButton from "@material-ui/core/IconButton";
 import { togglePreviewMenu } from "../redux/actions/cameraActions";
 import { useDispatch, useSelector } from "react-redux";
+import logo from "../images/logo.png";
 
 const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
-  },
-  navBar: {
+    minWidth: 320,
     zIndex: 3,
+  },
+  logo: {
+    width: 70,
+    position: "absolute",
+    top: -5,
+    left: 100,
   },
   menuButton: {
     marginRight: theme.spacing(2),
@@ -38,10 +44,10 @@ export default function Navbar(props) {
   };
   return (
     <div className={classes.root}>
-      <AppBar className={classes.navBar} position="fixed">
+      <AppBar classes={{ root: classes.root }} position="fixed">
         <Toolbar>
           <Typography variant="h6" className={classes.title}>
-            PdfOnline
+            <img className={classes.logo} src={logo} alt="Logo" /> ScanOnline
           </Typography>
           <IconButton
             className={classes.previewMenuBtn}

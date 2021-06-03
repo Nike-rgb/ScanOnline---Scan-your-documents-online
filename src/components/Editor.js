@@ -68,7 +68,7 @@ export const Editor = (props) => {
           addEditedPicture(cropper.getCroppedCanvas().toDataURL(), editIndex)
         );
       } else {
-        dispatch(setAlertMsg(`${scannedImages.length} photo added.`));
+        dispatch(setAlertMsg(`${scannedImages.length + 1} photo added.`));
         dispatch(addNewPicture(cropper.getCroppedCanvas().toDataURL()));
         dispatch(openCamera());
       }
@@ -77,8 +77,7 @@ export const Editor = (props) => {
   };
 
   const handleSkip = () => {
-    if (editIndex !== null) dispatch(addEditedPicture(props.src), editIndex);
-    else {
+    if (editIndex === null) {
       dispatch(setAlertMsg(`${scannedImages.length + 1} photo added.`));
       dispatch(addNewPicture(props.src));
       dispatch(openCamera());
@@ -103,7 +102,7 @@ export const Editor = (props) => {
             background={false}
             responsive={true}
             autoCropArea={1}
-            checkOrientation={false} // https://github.com/fengyuanchen/cropperjs/issues/671
+            checkOrientation={false}
             onInitialized={(instance) => {
               setCropper(instance);
             }}

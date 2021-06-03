@@ -17,7 +17,7 @@ import CameraIcon from "@material-ui/icons/Camera";
 import Slide from "@material-ui/core/Slide";
 import { forwardRef, useState, useEffect } from "react";
 import cat from "../images/cat.svg";
-import { clear, get } from "idb-keyval";
+import { del, get } from "idb-keyval";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -117,7 +117,7 @@ export default function LandingPage(props) {
     });
   };
   const handleDeleteFromLocal = () => {
-    clear();
+    del();
     setOpen(false);
   };
   return (

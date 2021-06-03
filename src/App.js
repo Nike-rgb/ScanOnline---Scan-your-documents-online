@@ -1,9 +1,7 @@
+import { useState, Suspense, lazy } from "react";
 import NavBar from "./components/NavBar";
 import LandingPage from "./components/LandingPage";
-import FinishPage from "./components/FinishPage";
-import Camera from "./components/Camera";
 import Alert from "./components/Alert";
-import PreviewMenu from "./components/PreviewMenu";
 import Editor from "./components/Editor";
 import { useSelector } from "react-redux";
 import Grow from "@material-ui/core/Grow";
@@ -11,8 +9,12 @@ import ImageIcon from "@material-ui/icons/Image";
 import pig from "./images/pig.svg";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
-import PdfSettings from "./components/PdfSettings";
-import { useState } from "react";
+import Loading from "./components/Loading";
+import PreviewMenu from "./components/PreviewMenu";
+import FinishPage from "./components/FinishPage";
+
+const Camera = lazy(() => import("./components/Camera"));
+const PdfSettings = lazy(() => import("./components/PdfSettings"));
 
 const useStyles = makeStyles((theme) => ({
   instruction2: {
@@ -35,14 +37,18 @@ export default function App(props) {
     <>
       <Alert msg={alertMsg} />
       <NavBar finishing={finishing} />
-      {previewMenuOpen && <PreviewMenu />}
       {!imagesUploaded && <LandingPage />}
+      {previewMenuOpen && <PreviewMenu />}
+      {editorData && <Editor src={editorData} />}
       {imagesUploaded && !finishing && (
         <FinishPage setFinishing={setFinishing} />
       )}
-      {finishing && <PdfSettings setFinishing={setFinishing} />}
-      <Camera cameraOpen={cameraOpen} />
-      {editorData && <Editor src={editorData} />}
+      <Suspense fallback={<Loading />}>
+        {finishing && <PdfSettings setFinishing={setFinishing} />}
+      </Suspense>
+      <Suspense fallback={<div></div>}>
+        <Camera cameraOpen={cameraOpen} />
+      </Suspense>
       <Grow in={imagesUploaded}>
         <Typography
           className={classes.instruction2}
@@ -66,4 +72,9 @@ export default function App(props) {
       </Grow>
     </>
   );
+  /*return (
+    <>
+      <NavBar setOpenSettings={setOpenSettings} finishing={finishing} />
+    </>
+  );*/
 }

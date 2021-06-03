@@ -3,9 +3,10 @@
   "name": "Scan your documents online",
   "icons": [
     {
-      "src": "images/playstore.png",
+      "src": "images/icon.png",
       "type": "image/png",
-      "sizes": "1024x1024"
+      "sizes": "540x540",
+      "purpose": "maskable"
     }
   ],
   "start_url": ".",
