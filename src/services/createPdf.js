@@ -118,5 +118,5 @@ export const PrintPdf = (sections, pdfSettings, pageWidth, pageHeight) => {
       };
     },
   };
-  pdfMake.createPdf(docDefinition).open();
+  pdfMake.createPdf(docDefinition).download(pdfSettings.title);
 };

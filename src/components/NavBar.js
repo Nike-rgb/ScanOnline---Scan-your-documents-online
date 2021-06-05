@@ -4,6 +4,7 @@ import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
 import ImageIcon from "@material-ui/icons/Image";
+import ContactSupportIcon from "@material-ui/icons/ContactSupport";
 import IconButton from "@material-ui/core/IconButton";
 import { togglePreviewMenu } from "../redux/actions/cameraActions";
 import { useDispatch, useSelector } from "react-redux";
@@ -27,7 +28,7 @@ const useStyles = makeStyles((theme) => ({
   title: {
     flexGrow: 1,
   },
-  previewMenuBtn: {
+  btn: {
     color: "white",
   },
   numberBadge: {
@@ -42,6 +43,9 @@ export default function Navbar(props) {
   const handleTogglePreviewMenu = () => {
     dispatch(togglePreviewMenu());
   };
+  const handleOpenFaq = () => {
+    props.setOpenFaq((prev) => !prev);
+  };
   return (
     <div className={classes.root}>
       <AppBar classes={{ root: classes.root }} position="fixed">
@@ -50,12 +54,22 @@ export default function Navbar(props) {
             <img className={classes.logo} src={logo} alt="Logo" /> ScanOnline
           </Typography>
           <IconButton
-            className={classes.previewMenuBtn}
-            disabled={imagesUploaded && !props.finishing ? false : true}
+            className={classes.btn}
+            disabled={
+              !imagesUploaded || props.finishing || props.openFaq ? true : false
+            }
             aria-label="open-captured-images"
             onClick={handleTogglePreviewMenu}
           >
             <ImageIcon />
+          </IconButton>
+          <IconButton
+            className={classes.btn}
+            disabled={!props.finishing ? false : true}
+            aria-label="open faqs"
+            onClick={handleOpenFaq}
+          >
+            <ContactSupportIcon />
           </IconButton>
         </Toolbar>
       </AppBar>

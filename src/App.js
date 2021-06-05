@@ -12,6 +12,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import Loading from "./components/Loading";
 import PreviewMenu from "./components/PreviewMenu";
 import FinishPage from "./components/FinishPage";
+import FAQ from "./components/FAQ";
 
 const Camera = lazy(() => import("./components/Camera"));
 const PdfSettings = lazy(() => import("./components/PdfSettings"));
@@ -19,9 +20,12 @@ const PdfSettings = lazy(() => import("./components/PdfSettings"));
 const useStyles = makeStyles((theme) => ({
   instruction2: {
     position: "absolute",
-    bottom: 10,
+    top: 600,
     left: 15,
     zIndex: -1,
+    [theme.breakpoints.down("xs")]: {
+      top: "95%",
+    },
   },
 }));
 
@@ -33,16 +37,18 @@ export default function App(props) {
   const cameraOpen = useSelector((state) => state.camera.cameraOpen);
   const editorData = useSelector((state) => state.camera.editorData);
   const [finishing, setFinishing] = useState(false);
+  const [openFaq, setOpenFaq] = useState(false);
   return (
     <>
       <Alert msg={alertMsg} />
-      <NavBar finishing={finishing} />
+      <NavBar openFaq={openFaq} setOpenFaq={setOpenFaq} finishing={finishing} />
       {!imagesUploaded && <LandingPage />}
       {previewMenuOpen && <PreviewMenu />}
       {editorData && <Editor src={editorData} />}
       {imagesUploaded && !finishing && (
         <FinishPage setFinishing={setFinishing} />
       )}
+      <FAQ openFaq={openFaq} />
       <Suspense fallback={<Loading />}>
         {finishing && <PdfSettings setFinishing={setFinishing} />}
       </Suspense>
@@ -65,16 +71,11 @@ export default function App(props) {
               left: 0,
             }}
           />
-          Click on{" "}
-          <ImageIcon style={{ fill: "grey", position: "relative", top: 4 }} />{" "}
+          Click on
+          <ImageIcon style={{ fill: "grey", position: "relative", top: 4 }} />
           to edit/delete images
         </Typography>
       </Grow>
     </>
   );
-  /*return (
-    <>
-      <NavBar setOpenSettings={setOpenSettings} finishing={finishing} />
-    </>
-  );*/
 }

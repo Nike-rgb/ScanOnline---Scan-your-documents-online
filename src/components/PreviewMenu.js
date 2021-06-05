@@ -15,7 +15,7 @@ const useStyles = makeStyles((theme) => ({
     position: "absolute",
     top: 50,
     right: "2%",
-    height: 290,
+    height: 310,
     zIndex: 4,
     [theme.breakpoints.down("xs")]: {
       height: 425,
@@ -31,7 +31,7 @@ const useStyles = makeStyles((theme) => ({
   grid: {
     gridTemplateColumns: "120px 120px 120px 120px 120px",
     position: "relative",
-    top: "8%",
+    top: "12%",
     padding: 15,
     bottom: 0,
     justifyItems: "center",
@@ -42,6 +42,7 @@ const useStyles = makeStyles((theme) => ({
     height: "90%",
     [theme.breakpoints.down("xs")]: {
       gridTemplateColumns: "120px 120px",
+      top: "8%",
     },
   },
   clearBtn: {

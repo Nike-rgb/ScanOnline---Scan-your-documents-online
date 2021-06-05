@@ -95,7 +95,7 @@ const useStyles = makeStyles((theme) => ({
     padding: 5,
     position: "absolute",
     bottom: "15%",
-    fontSize: 17,
+    fontSize: 16,
     left: "30%",
     [theme.breakpoints.down("sm")]: {
       width: "70%",
@@ -202,13 +202,14 @@ export default function PdfSettings(props) {
     const roll = rollRef.current.value;
     const faculty = facultyRef.current.value;
     const settings = { title, name, roll, faculty, attributed };
-    PrintPdf(
-      scannedImages.map((image, index) => ({
-        image,
-      })),
-      settings
-    );
-    del("images");
+    del("images").then(() => {
+      PrintPdf(
+        scannedImages.map((image, index) => ({
+          image,
+        })),
+        settings
+      );
+    });
   };
 
   React.useEffect(() => {
@@ -234,6 +235,7 @@ export default function PdfSettings(props) {
         open={open}
         setOpen={setOpen}
         handle
+        attributed={attributed}
         setAttributed={setAttributed}
       />
       <Grow in={true}>

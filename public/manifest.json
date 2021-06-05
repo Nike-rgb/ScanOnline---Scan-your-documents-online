@@ -1,12 +1,13 @@
 {
-  "short_name": "PdfOnline",
-  "name": "Scan your documents online",
+  "short_name": "ScanOnline",
+  "name": "ScanOnline",
+  "description": "Scan your assignments online",
   "icons": [
     {
       "src": "images/icon.png",
       "type": "image/png",
       "sizes": "540x540",
-      "purpose": "maskable"
+      "purpose": "any"
     }
   ],
   "start_url": ".",
