@@ -25,7 +25,7 @@ const pdfContent = (sections, pageWidth = 6, pageHeight = 7, pdfSettings) => {
       attributed
         ? {
             text: "Made with scanOnline",
-            link: "https://scanonline.web.app",
+            link: "https://scanonline101.web.app",
             margin: 0,
             fontSize: 10,
             bold: true,

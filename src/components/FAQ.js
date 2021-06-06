@@ -74,7 +74,7 @@ const FAQS = [
   {
     question: "How can I contribute?",
     answer: `You can contact me at nikeshlepcha7@gmail.com. Buy me a coffee. Also if you are a developer,
-        this project is open source and is on github. Go give it a visit and star it.`,
+        this project is open source and is on github at https://github.com/Nike-rgb/ScanOnline---Scan-your-documents-online. Go give it a visit and star it.`,
   },
 ];
 
