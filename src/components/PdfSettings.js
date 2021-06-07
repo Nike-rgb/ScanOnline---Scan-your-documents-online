@@ -35,8 +35,9 @@ const useStyles = makeStyles((theme) => ({
       minHeight: 350,
     },
     [theme.breakpoints.down("xs")]: {
-      height: 400,
-      top: "15%",
+      height: "60%",
+      minHeight: 400,
+      top: "20%",
     },
   },
   root: {
@@ -49,6 +50,7 @@ const useStyles = makeStyles((theme) => ({
     },
     [theme.breakpoints.down("xs")]: {
       width: "35%",
+      top: "16%",
     },
   },
   stepper: {

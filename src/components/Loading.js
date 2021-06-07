@@ -4,8 +4,7 @@ import { makeStyles } from "@material-ui/core/styles";
 const useStyles = makeStyles((theme) => ({
   container: {
     position: "absolute",
-    width: "10%",
-    left: "45%",
+    width: "100%",
     textAlign: "center",
     top: "45%",
     zIndex: 1000,
