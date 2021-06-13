@@ -39,12 +39,7 @@ const FAQS = [
   {
     question: "Does it work offline?",
     answer: `Yes, it is a fully offline working app. However, you need an internet connection when you load it the 
-        first time duh, and also for ocassional updates. For best offline expericence, add to homescreen. Go give it a try, turn off your internet and reload this page.`,
-  },
-  {
-    question: "My camera is not opening. What should I do?",
-    answer: `Make sure you allow us the permission to use your camera when you first load the app.
-        You can always change it in your browser's settings.`,
+        first time duh, and also for ocassional updates. For best offline experience, add to homescreen. Go give it a try, turn off your internet and reload this page.`,
   },
   {
     question:

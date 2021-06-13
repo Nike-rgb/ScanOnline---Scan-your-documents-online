@@ -1,9 +1,10 @@
-import { useState, Suspense, lazy } from "react";
+import { useState, useEffect, Suspense, lazy } from "react";
+import { setAlertMsg } from "./redux/actions/cameraActions";
 import NavBar from "./components/NavBar";
 import LandingPage from "./components/LandingPage";
 import Alert from "./components/Alert";
 import Editor from "./components/Editor";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import Grow from "@material-ui/core/Grow";
 import ImageIcon from "@material-ui/icons/Image";
 import pig from "./images/pig.svg";
@@ -13,8 +14,7 @@ import Loading from "./components/Loading";
 import PreviewMenu from "./components/PreviewMenu";
 import FinishPage from "./components/FinishPage";
 import FAQ from "./components/FAQ";
-
-const Camera = lazy(() => import("./components/Camera"));
+import Camera from "./components/Camera";
 const PdfSettings = lazy(() => import("./components/PdfSettings"));
 
 const useStyles = makeStyles((theme) => ({
@@ -31,16 +31,23 @@ const useStyles = makeStyles((theme) => ({
 
 export default function App(props) {
   const classes = useStyles();
+  const dispatch = useDispatch();
+  const [update, setUpdate] = useState(false);
   const alertMsg = useSelector((state) => state.camera.alertMsg);
   const imagesUploaded = useSelector((state) => state.camera.imagesUploaded);
   const previewMenuOpen = useSelector((state) => state.camera.previewMenuOpen);
-  const cameraOpen = useSelector((state) => state.camera.cameraOpen);
   const editorData = useSelector((state) => state.camera.editorData);
   const [finishing, setFinishing] = useState(false);
   const [openFaq, setOpenFaq] = useState(false);
+  useEffect(() => {
+    setUpdate(true);
+    dispatch(
+      setAlertMsg("New: Camera uses native device for better resolution")
+    );
+  }, []);
   return (
     <>
-      <Alert msg={alertMsg} />
+      <Alert update={update} msg={alertMsg} />
       <NavBar openFaq={openFaq} setOpenFaq={setOpenFaq} finishing={finishing} />
       {!imagesUploaded && <LandingPage />}
       {previewMenuOpen && <PreviewMenu />}
@@ -52,9 +59,7 @@ export default function App(props) {
       <Suspense fallback={<Loading />}>
         {finishing && <PdfSettings setFinishing={setFinishing} />}
       </Suspense>
-      <Suspense fallback={<div></div>}>
-        <Camera cameraOpen={cameraOpen} />
-      </Suspense>
+      <Camera />
       <Grow in={imagesUploaded}>
         <Typography
           className={classes.instruction2}

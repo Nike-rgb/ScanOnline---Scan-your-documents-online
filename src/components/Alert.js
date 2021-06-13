@@ -34,7 +34,7 @@ export default function Alert(props) {
       }}
       className={classes.alert}
       open={open}
-      autoHideDuration={1200}
+      autoHideDuration={props.update ? 3000 : 1200}
       onClose={handleClose}
     >
       <SnackbarContent
@@ -42,9 +42,11 @@ export default function Alert(props) {
         message={props.msg}
         action={
           <>
-            <IconButton size="small" aria-label="success" color="inherit">
-              <CheckCircleOutlineIcon fontSize="small" />
-            </IconButton>
+            {!props.update && (
+              <IconButton size="small" aria-label="success" color="inherit">
+                <CheckCircleOutlineIcon fontSize="small" />
+              </IconButton>
+            )}
           </>
         }
       />

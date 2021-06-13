@@ -29,6 +29,7 @@ const useStyles = makeStyles((theme) => ({
   },
   editorContainer: {
     height: 450,
+    minWidth: 300,
     position: "relative",
     background: "#ffffff42",
     [theme.breakpoints.down("xs")]: {
@@ -100,8 +101,10 @@ export const Editor = (props) => {
             minCropBoxHeight={50}
             minCropBoxWidth={50}
             background={false}
-            responsive={true}
             autoCropArea={1}
+            movable={false}
+            rotatable={true}
+            zoomable={false}
             checkOrientation={false}
             onInitialized={(instance) => {
               setCropper(instance);
