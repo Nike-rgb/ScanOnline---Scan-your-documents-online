@@ -15,12 +15,13 @@ import PreviewMenu from "./components/PreviewMenu";
 import FinishPage from "./components/FinishPage";
 import FAQ from "./components/FAQ";
 import Camera from "./components/Camera";
+import { set } from "idb-keyval";
 const PdfSettings = lazy(() => import("./components/PdfSettings"));
 
 const useStyles = makeStyles((theme) => ({
   instruction2: {
     position: "absolute",
-    top: 600,
+    top: 620,
     left: 15,
     zIndex: -1,
     [theme.breakpoints.down("xs")]: {
@@ -28,6 +29,11 @@ const useStyles = makeStyles((theme) => ({
     },
   },
 }));
+
+function saveToLocal(arr) {
+  if (!arr.length) return;
+  return set("images", arr);
+}
 
 export default function App(props) {
   const classes = useStyles();
@@ -44,10 +50,14 @@ export default function App(props) {
     dispatch(
       setAlertMsg("New: Camera uses native device for better resolution")
     );
-  }, []);
+  }, [dispatch]);
+  const scannedImages = useSelector((state) => state.camera.scannedImages);
+  useEffect(() => {
+    if (scannedImages.length) saveToLocal(scannedImages);
+  }, [scannedImages]);
   return (
     <>
-      <Alert update={update} msg={alertMsg} />
+      <Alert setUpdate={setUpdate} update={update} msg={alertMsg} />
       <NavBar openFaq={openFaq} setOpenFaq={setOpenFaq} finishing={finishing} />
       {!imagesUploaded && <LandingPage />}
       {previewMenuOpen && <PreviewMenu />}

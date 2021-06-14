@@ -40,7 +40,7 @@ const useStyles = makeStyles((theme) => ({
     top: "10%",
     width: "100%",
     textAlign: "center",
-    padding: 10,
+    padding: 5,
   },
   btnWrapper: {
     textAlign: "center",
@@ -101,25 +101,6 @@ const useStyles = makeStyles((theme) => ({
     position: "absolute",
   },
 }));
-
-/*
-<div className={classes.features}>
-        <div>
-          <div className="feature-title">Online pdf Scanner</div>
-          <div className="feature-content">
-            Scan your documents with your device's camera on the web. It is an
-            online tool which helps you to run scans of your documents.
-          </div>
-        </div>
-        <div>
-          <div className="feature-title">Online pdf Scanner</div>
-          <div className="feature-content">
-            Scan your documents with your device's camera on the web. It is an
-            online tool which helps you to run scans of your documents.
-          </div>
-        </div>
-      </div>
-      */
 
 const Transition = forwardRef(function Transition(props, ref) {
   return <Slide direction="down" ref={ref} {...props} />;
@@ -205,7 +186,7 @@ export default function LandingPage(props) {
           variant="h6"
           color="initial"
         >
-          Simple, minimalistic, intuitive.
+          Easy app to scan assignments.<br></br>
           <div className={classes.iconWrapper}>
             <CameraIcon className={classes.icon} />
           </div>

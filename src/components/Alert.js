@@ -21,6 +21,7 @@ export default function Alert(props) {
   const classes = useStyles();
   const [open, setOpen] = React.useState();
   const handleClose = () => {
+    if (props.update) setTimeout(() => props.setUpdate(false), 1000);
     setOpen(false);
   };
   React.useEffect(() => {
@@ -34,7 +35,7 @@ export default function Alert(props) {
       }}
       className={classes.alert}
       open={open}
-      autoHideDuration={props.update ? 3000 : 1200}
+      autoHideDuration={props.update ? 3500 : 1200}
       onClose={handleClose}
     >
       <SnackbarContent

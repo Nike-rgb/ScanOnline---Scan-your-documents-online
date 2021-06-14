@@ -64,7 +64,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function LandingPage(props) {
+export default function FinishPage(props) {
   const classes = useStyles();
   const dispatch = useDispatch();
   const [btnValid, setBtnValid] = useState(true);

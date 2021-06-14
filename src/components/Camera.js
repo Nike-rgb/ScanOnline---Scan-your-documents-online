@@ -19,14 +19,16 @@ export default function Camera(props) {
       const reader = new FileReader();
       reader.readAsDataURL(files[0]);
       reader.onload = () => {
-        dispatch(loadEditor(reader.result));
+        let src = reader.result;
+        dispatch(loadEditor(src));
       };
     }
+    e.currentTarget.value = null;
   };
   return (
     <>
       <input
-        onChange={handleChange}
+        onInput={handleChange}
         hidden
         ref={cameraRef}
         type="file"

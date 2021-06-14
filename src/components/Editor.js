@@ -10,7 +10,6 @@ import {
   addNewPicture,
   addEditedPicture,
   closeEditor,
-  openCamera,
   removeEditIndex,
   setAlertMsg,
 } from "../redux/actions/cameraActions";
@@ -71,7 +70,6 @@ export const Editor = (props) => {
       } else {
         dispatch(setAlertMsg(`${scannedImages.length + 1} photo added.`));
         dispatch(addNewPicture(cropper.getCroppedCanvas().toDataURL()));
-        dispatch(openCamera());
       }
     }
     cleanUp();
@@ -81,7 +79,6 @@ export const Editor = (props) => {
     if (editIndex === null) {
       dispatch(setAlertMsg(`${scannedImages.length + 1} photo added.`));
       dispatch(addNewPicture(props.src));
-      dispatch(openCamera());
     }
     cleanUp();
   };

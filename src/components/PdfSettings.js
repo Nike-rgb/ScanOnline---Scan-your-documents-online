@@ -193,7 +193,7 @@ export default function PdfSettings(props) {
     }
   };
   const handleBack = () => {
-    setActiveStep((prevActiveStep) => prevActiveStep - 1);
+    if (activeStep !== 0) setActiveStep((prevActiveStep) => prevActiveStep - 1);
   };
 
   const handleDownload = () => {
@@ -298,7 +298,7 @@ export default function PdfSettings(props) {
               style={{ display: activeStep === 0 ? "inline" : "none" }}
               spellCheck={false}
               className={classes.formInput}
-              placeholder="Title"
+              placeholder="eg. Assignment 1"
             />
             <input
               ref={nameRef}
@@ -306,7 +306,7 @@ export default function PdfSettings(props) {
               style={{ display: activeStep === 1 ? "inline" : "none" }}
               spellCheck={false}
               className={classes.formInput}
-              placeholder="Name"
+              placeholder="eg. John Frickin' Doe"
             />
             <input
               ref={rollRef}
@@ -314,7 +314,7 @@ export default function PdfSettings(props) {
               style={{ display: activeStep === 2 ? "inline" : "none" }}
               spellCheck={false}
               className={classes.formInput}
-              placeholder="Your Roll n.o"
+              placeholder="eg. 1568"
             />
             <input
               ref={facultyRef}
@@ -322,7 +322,7 @@ export default function PdfSettings(props) {
               style={{ display: activeStep === 3 ? "inline" : "none" }}
               spellCheck={false}
               className={classes.formInput}
-              placeholder="Your faculty"
+              placeholder="eg. Science"
             />
           </form>
           <div className={classes.btnContainer}>
@@ -341,6 +341,7 @@ export default function PdfSettings(props) {
                   variant="contained"
                   onClick={handleBack}
                   color="primary"
+                  disabled={activeStep === 0 ? true : false}
                 >
                   prev
                 </Button>

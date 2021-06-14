@@ -8,7 +8,7 @@ import { useDispatch, useSelector } from "react-redux";
 import CloseIcon from "@material-ui/icons/Close";
 import SickCat from "../images/sickcat.svg";
 import { moveImages, togglePreviewMenu } from "../redux/actions/cameraActions";
-import { set, clear } from "idb-keyval";
+import { del } from "idb-keyval";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -80,19 +80,10 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function saveToLocal(arr) {
-  if (!arr.length) return;
-  return set("images", arr);
-}
-
 export default function PreviewMenu(props) {
   const classes = useStyles();
   const dispatch = useDispatch();
   const scannedImages = useSelector((state) => state.camera.scannedImages);
-  useEffect(() => {
-    if (scannedImages.length === 0) return clear();
-    saveToLocal(scannedImages);
-  }, [scannedImages]);
   const [selectedImage, setSelectedImage] = useState(0);
   const [rearrangeOrder, setRearrangeOrder] = useState({});
   const handleTogglePreviewMenu = () => {
@@ -108,6 +99,9 @@ export default function PreviewMenu(props) {
       setRearrangeOrder({});
     }
   }, [rearrangeOrder, dispatch]);
+  useEffect(() => {
+    if (!scannedImages.length) del("images");
+  }, [scannedImages]);
   return (
     <>
       <Grow in={true}>
