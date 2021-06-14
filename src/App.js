@@ -16,7 +16,8 @@ import FinishPage from "./components/FinishPage";
 import FAQ from "./components/FAQ";
 import Camera from "./components/Camera";
 import { set } from "idb-keyval";
-const PdfSettings = lazy(() => import("./components/PdfSettings"));
+import createPdf from "./services/createPdf";
+//const PdfSettings = lazy(() => import("./components/PdfSettings"));
 
 const useStyles = makeStyles((theme) => ({
   instruction2: {
@@ -55,7 +56,7 @@ export default function App(props) {
   useEffect(() => {
     if (scannedImages.length) saveToLocal(scannedImages);
   }, [scannedImages]);
-  return (
+  /*return (
     <>
       <Alert setUpdate={setUpdate} update={update} msg={alertMsg} />
       <NavBar openFaq={openFaq} setOpenFaq={setOpenFaq} finishing={finishing} />
@@ -92,5 +93,9 @@ export default function App(props) {
         </Typography>
       </Grow>
     </>
-  );
+  );*/
+  const download = () => {
+    createPdf();
+  };
+  return <button onClick={download}>Download</button>;
 }

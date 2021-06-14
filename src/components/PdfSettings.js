@@ -205,12 +205,7 @@ export default function PdfSettings(props) {
     const faculty = facultyRef.current.value;
     const settings = { title, name, roll, faculty, attributed };
     del("images").then(() => {
-      PrintPdf(
-        scannedImages.map((image, index) => ({
-          image,
-        })),
-        settings
-      );
+      PrintPdf(scannedImages, settings);
     });
   };
 
