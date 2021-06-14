@@ -11,6 +11,7 @@ const useStyles = makeStyles((theme) => ({
   },
   container: {
     height: 450,
+    width: 300,
     position: "relative",
     [theme.breakpoints.down("xs")]: {
       height: "100vh",
