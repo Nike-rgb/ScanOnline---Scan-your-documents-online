@@ -8,7 +8,6 @@ import { useDispatch, useSelector } from "react-redux";
 import CloseIcon from "@material-ui/icons/Close";
 import SickCat from "../images/sickcat.svg";
 import { moveImages, togglePreviewMenu } from "../redux/actions/cameraActions";
-import { del } from "idb-keyval";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -99,12 +98,9 @@ export default function PreviewMenu(props) {
       setRearrangeOrder({});
     }
   }, [rearrangeOrder, dispatch]);
-  useEffect(() => {
-    if (!scannedImages.length) del("images");
-  }, [scannedImages]);
   return (
     <>
-      <Grow in={true}>
+      <Grow in={props.previewMenuOpen}>
         <Paper className={classes.paper} elevation={10}>
           <Grow in={scannedImages.length === 0}>
             <div className={classes.emptyIconContainer}>

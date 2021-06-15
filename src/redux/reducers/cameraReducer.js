@@ -8,6 +8,7 @@ const initialState = {
   editorData: null,
   editIndex: null,
   alertMsg: undefined,
+  downloadSettings: null,
 };
 
 function moveImages({ src, dest }, arr) {
@@ -105,6 +106,11 @@ export default function cameraReducers(state = initialState, action) {
       return {
         ...state,
         alertMsg: action.data,
+      };
+    case actionTypes.SET_DOWNLOAD_SETTINGS:
+      return {
+        ...state,
+        downloadSettings: action.data,
       };
     default:
       return state;

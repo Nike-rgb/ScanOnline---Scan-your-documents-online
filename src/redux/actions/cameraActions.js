@@ -92,3 +92,10 @@ export function setAlertMsg(msg) {
     data: msg,
   };
 }
+
+export function setDownloadSettings(settings) {
+  return {
+    type: actionTypes.SET_DOWNLOAD_SETTINGS,
+    data: settings,
+  };
+}

@@ -15,8 +15,9 @@ import PreviewMenu from "./components/PreviewMenu";
 import FinishPage from "./components/FinishPage";
 import FAQ from "./components/FAQ";
 import Camera from "./components/Camera";
-import { set } from "idb-keyval";
+import { set, del } from "idb-keyval";
 const PdfSettings = lazy(() => import("./components/PdfSettings"));
+const PdfReview = lazy(() => import("./components/PdfReview"));
 
 const useStyles = makeStyles((theme) => ({
   instruction2: {
@@ -30,8 +31,9 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function saveToLocal(arr) {
-  if (!arr.length) return;
+function saveToLocal(arr, imagesUploaded) {
+  if (!arr.length && !imagesUploaded) return;
+  if (!arr.length) return del("images");
   return set("images", arr);
 }
 
@@ -45,6 +47,9 @@ export default function App(props) {
   const editorData = useSelector((state) => state.camera.editorData);
   const [finishing, setFinishing] = useState(false);
   const [openFaq, setOpenFaq] = useState(false);
+  const downloadSettings = useSelector(
+    (state) => state.camera.downloadSettings
+  );
   useEffect(() => {
     setUpdate(true);
     dispatch(
@@ -53,20 +58,20 @@ export default function App(props) {
   }, [dispatch]);
   const scannedImages = useSelector((state) => state.camera.scannedImages);
   useEffect(() => {
-    if (scannedImages.length) saveToLocal(scannedImages);
-  }, [scannedImages]);
+    saveToLocal(scannedImages, imagesUploaded);
+  }, [scannedImages, imagesUploaded]);
   return (
     <>
       <Alert setUpdate={setUpdate} update={update} msg={alertMsg} />
       <NavBar openFaq={openFaq} setOpenFaq={setOpenFaq} finishing={finishing} />
       {!imagesUploaded && <LandingPage />}
-      {previewMenuOpen && <PreviewMenu />}
+      <PreviewMenu previewMenuOpen={previewMenuOpen} />
       {editorData && <Editor src={editorData} />}
       {imagesUploaded && !finishing && (
         <FinishPage setFinishing={setFinishing} />
       )}
       <FAQ openFaq={openFaq} />
-      <Suspense fallback={<Loading />}>
+      <Suspense fallback={<Loading text="Loading settings..." />}>
         {finishing && <PdfSettings setFinishing={setFinishing} />}
       </Suspense>
       <Camera />
@@ -91,6 +96,9 @@ export default function App(props) {
           to edit/delete images
         </Typography>
       </Grow>
+      <Suspense fallback={<Loading text="Preparing your PDF..." />}>
+        {downloadSettings && <PdfReview downloadSettings={downloadSettings} />}
+      </Suspense>
     </>
   );
 }

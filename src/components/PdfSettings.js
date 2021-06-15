@@ -5,8 +5,7 @@ import Step from "@material-ui/core/Step";
 import StepLabel from "@material-ui/core/StepLabel";
 import Button from "@material-ui/core/Button";
 import Typography from "@material-ui/core/Typography";
-import { PrintPdf } from "../services/createPdf";
-import { useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
 import Paper from "@material-ui/core/Paper";
 import Grow from "@material-ui/core/Grow";
@@ -17,6 +16,7 @@ import CloseIcon from "@material-ui/icons/Close";
 import IconButton from "@material-ui/core/IconButton";
 import byebye from "../images/byebye.svg";
 import { del, set, get } from "idb-keyval";
+import { setDownloadSettings } from "../redux/actions/cameraActions";
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -155,12 +155,12 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function PdfSettings(props) {
+  const dispatch = useDispatch();
   const theme = useTheme();
   const titleRef = React.useRef();
   const nameRef = React.useRef();
   const rollRef = React.useRef();
   const facultyRef = React.useRef();
-  const scannedImages = useSelector((state) => state.camera.scannedImages);
   const smallDevice = useMediaQuery(theme.breakpoints.down("sm"));
   const classes = useStyles();
   const [activeStep, setActiveStep] = React.useState(0);
@@ -198,19 +198,14 @@ export default function PdfSettings(props) {
 
   const handleDownload = () => {
     setDownloading(true);
-    setTimeout(() => setDownloading(false), 1500);
+    setTimeout(() => setDownloading(false), 1000);
     const title = titleRef.current.value;
     const name = nameRef.current.value;
     const roll = rollRef.current.value;
     const faculty = facultyRef.current.value;
     const settings = { title, name, roll, faculty, attributed };
     del("images").then(() => {
-      PrintPdf(
-        scannedImages.map((image, index) => ({
-          image,
-        })),
-        settings
-      );
+      dispatch(setDownloadSettings(settings));
     });
   };
 
@@ -356,7 +351,7 @@ export default function PdfSettings(props) {
                   color="secondary"
                   style={{ fontSize: 12 }}
                 >
-                  {downloading ? "Downloading" : "Download your PDF"}
+                  {downloading ? "Preparing download" : "Download your PDF"}
                   <GetAppIcon style={{ position: "relative ", left: 10 }} />
                 </Button>
               </>
