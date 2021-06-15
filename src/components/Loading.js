@@ -11,6 +11,7 @@ const useStyles = makeStyles((theme) => ({
   },
   container: {
     height: 450,
+    width: 300,
     position: "relative",
     [theme.breakpoints.down("xs")]: {
       height: "100vh",
@@ -51,7 +52,7 @@ export default function Loading(props) {
   const classes = useStyles();
   return (
     <>
-      <Backdrop className={classes.backdrop} open={true}>
+      <Backdrop className={classes.backdrop} open={props.hidden ? false : true}>
         <Paper elevation={2} className={classes.container}>
           <Grow in={true}>
             <div>
@@ -59,7 +60,8 @@ export default function Loading(props) {
                 <img alt="pig saying wait" width="100%" src={pigWait} />
               </div>
               <p className={classes.cameraInstruction}>
-                Loading...<br></br>
+                {props.text}
+                <br></br>
                 <br></br>
                 {loadingMsgs[Math.floor(Math.random() * loadingMsgs.length)]}
               </p>

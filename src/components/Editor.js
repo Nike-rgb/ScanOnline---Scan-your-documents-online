@@ -14,6 +14,7 @@ import {
   setAlertMsg,
 } from "../redux/actions/cameraActions";
 import { useDispatch, useSelector } from "react-redux";
+import CropFreeIcon from "@material-ui/icons/CropFree";
 
 const useStyles = makeStyles((theme) => ({
   backdrop: {
@@ -82,7 +83,6 @@ export const Editor = (props) => {
     }
     cleanUp();
   };
-
   return (
     <Grow in={true}>
       <Backdrop classes={{ root: classes.backdrop }} open={true}>
@@ -108,16 +108,18 @@ export const Editor = (props) => {
             }}
           />
           <div className={classes.btns}>
-            <Button color="primary" variant="contained" onClick={handleSkip}>
-              {editIndex !== null ? "Cancel" : "Don't crop"}
-            </Button>
+            {editIndex !== null ? (
+              <Button color="primary" variant="contained" onClick={handleSkip}>
+                Cancel
+              </Button>
+            ) : null}
             <Button
               color="primary"
               style={{ marginLeft: 5 }}
               variant="contained"
               onClick={handleCrop}
             >
-              Crop
+              Crop <CropFreeIcon style={{ position: "relative", left: 5 }} />
             </Button>
           </div>
         </Paper>

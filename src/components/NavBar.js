@@ -55,9 +55,7 @@ export default function Navbar(props) {
           </Typography>
           <IconButton
             className={classes.btn}
-            disabled={
-              !imagesUploaded || props.finishing || props.openFaq ? true : false
-            }
+            disabled={!imagesUploaded || props.finishing ? true : false}
             aria-label="open-captured-images"
             onClick={handleTogglePreviewMenu}
           >
