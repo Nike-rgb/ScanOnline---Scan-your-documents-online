@@ -7,6 +7,7 @@ import { makeStyles, useTheme } from "@material-ui/core/styles";
 import Backdrop from "@material-ui/core/Backdrop";
 import Button from "@material-ui/core/Button";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
+import Typography from "@material-ui/core/Typography";
 
 const useStyles = makeStyles((theme) => ({
   backdrop: {
@@ -54,42 +55,50 @@ export default function PdfReview(props) {
   const handleBack = () => {
     dispatch(setDownloadSettings(null));
   };
+
   return (
     <>
       <Grow in={true}>
         <Backdrop open={true} className={classes.backdrop}>
           {!largeDevice && (
-            <Button
-              className={classes.downloadBtn}
-              variant="contained"
-              color="primary"
-            >
-              <PDFDownloadLink
-                style={{ color: "white", textDecoration: "none" }}
-                document={
-                  <MyDoc
-                    scannedImages={scannedImages ? scannedImages : []}
-                    pdfSettings={
-                      props.downloadSettings ? props.downloadSettings : {}
-                    }
-                  />
-                }
-                fileName={
-                  props.downloadSettings
-                    ? props.downloadSettings.title
-                    : "PDF_File_Made_Using_ScanOnline"
-                }
+            <div style={{ padding: 10, textAlign: "center" }}>
+              <Typography variant="h6" color="initial">
+                It might take some time depending on the number of images.
+                <br></br>
+                <br></br>
+              </Typography>
+              <Button
+                className={classes.downloadBtn}
+                variant="contained"
+                color="primary"
               >
-                {({ blob, url, loading, error }) => {
-                  return loading
-                    ? "Wait..." +
+                <PDFDownloadLink
+                  style={{ color: "white" }}
+                  document={
+                    <MyDoc
+                      scannedImages={scannedImages ? scannedImages : []}
+                      pdfSettings={
+                        props.downloadSettings ? props.downloadSettings : {}
+                      }
+                    />
+                  }
+                  fileName={
+                    props.downloadSettings
+                      ? props.downloadSettings.title
+                      : "PDF_MADE_WITH_SCANONLINE"
+                  }
+                >
+                  {({ blob, url, loading, error }) =>
+                    loading
+                      ? "Wait..." +
                         downloadWaitMsgs[
                           Math.floor(Math.random() * downloadWaitMsgs.length)
                         ]
-                    : "Ready, Download";
-                }}
-              </PDFDownloadLink>
-            </Button>
+                      : "Download now!"
+                  }
+                </PDFDownloadLink>
+              </Button>
+            </div>
           )}
           <Button
             className={classes.backBtn}
