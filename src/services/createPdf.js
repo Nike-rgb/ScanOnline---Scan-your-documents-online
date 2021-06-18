@@ -47,14 +47,6 @@ const styles = StyleSheet.create({
   },
 });
 
-const pdfSettings = {
-  title: "Assignment",
-  name: "Nikesh Kazi lepcha",
-  roll: "THA076BEI015",
-  faculty: "BEI",
-  attributed: true,
-};
-
 const Watermark = () => {
   return (
     <View style={styles.watermark}>
@@ -106,7 +98,7 @@ const MyDoc = (props) => {
     <Document title={title} author={name}>
       <Page size="A6">
         {attributed && <Watermark />}
-        <Intro pdfSettings={pdfSettings} />
+        <Intro pdfSettings={props.pdfSettings} />
       </Page>
       {props.scannedImages.map((src, index) => {
         return <ImageSection key={`Image_${index + 1}`} src={src} />;

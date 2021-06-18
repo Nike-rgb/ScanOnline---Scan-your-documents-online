@@ -51,7 +51,7 @@ export default function Camera(props) {
         ref={cameraRef}
         type="file"
         accept="image/*"
-        capture="camera"
+        capture={true}
       />
     </>
   );

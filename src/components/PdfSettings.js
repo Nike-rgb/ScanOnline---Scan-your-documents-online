@@ -301,7 +301,7 @@ export default function PdfSettings(props) {
               style={{ display: activeStep === 1 ? "inline" : "none" }}
               spellCheck={false}
               className={classes.formInput}
-              placeholder="eg. John Frickin' Doe"
+              placeholder="eg. John Doe"
             />
             <input
               ref={rollRef}

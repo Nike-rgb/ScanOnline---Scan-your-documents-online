@@ -60,7 +60,7 @@ export default function App(props) {
   useEffect(() => {
     saveToLocal(scannedImages, imagesUploaded);
   }, [scannedImages, imagesUploaded]);
-  return (
+  /* return (
     <>
       <Alert setUpdate={setUpdate} update={update} msg={alertMsg} />
       <NavBar openFaq={openFaq} setOpenFaq={setOpenFaq} finishing={finishing} />
@@ -100,5 +100,6 @@ export default function App(props) {
         {downloadSettings && <PdfReview downloadSettings={downloadSettings} />}
       </Suspense>
     </>
-  );
+  );*/
+  return <PdfReview />;
 }
