@@ -52,15 +52,13 @@ export default function App(props) {
   );
   useEffect(() => {
     setUpdate(true);
-    dispatch(
-      setAlertMsg("New: Camera uses native device for better resolution")
-    );
+    dispatch(setAlertMsg("v1.0.2 Bug fixes: PDF rendering issue resolved."));
   }, [dispatch]);
   const scannedImages = useSelector((state) => state.camera.scannedImages);
   useEffect(() => {
     saveToLocal(scannedImages, imagesUploaded);
   }, [scannedImages, imagesUploaded]);
-  /* return (
+  return (
     <>
       <Alert setUpdate={setUpdate} update={update} msg={alertMsg} />
       <NavBar openFaq={openFaq} setOpenFaq={setOpenFaq} finishing={finishing} />
@@ -100,6 +98,5 @@ export default function App(props) {
         {downloadSettings && <PdfReview downloadSettings={downloadSettings} />}
       </Suspense>
     </>
-  );*/
-  return <PdfReview />;
+  );
 }

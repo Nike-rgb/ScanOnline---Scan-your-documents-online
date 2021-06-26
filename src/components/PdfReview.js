@@ -40,7 +40,7 @@ const useStyles = makeStyles((theme) => ({
 
 const downloadWaitMsgs = [
   "Squeezing your PDF",
-  "Cutting the papers",
+  "Cleaning the papers",
   "Importing ink from America",
   "Printing letters",
   "Gearing up our machine",
