@@ -4,6 +4,7 @@ import IconButton from "@material-ui/core/IconButton";
 import CheckCircleOutlineIcon from "@material-ui/icons/CheckCircleOutline";
 import { makeStyles } from "@material-ui/core/styles";
 import SnackbarContent from "@material-ui/core/SnackbarContent";
+import { useSelector } from "react-redux";
 
 const useStyles = makeStyles((theme) => ({
   alert: {
@@ -13,20 +14,20 @@ const useStyles = makeStyles((theme) => ({
   root: {
     width: "100%",
     padding: "2px 10px",
-    background: theme.palette.secondary.success,
   },
 }));
 
 export default function Alert(props) {
   const classes = useStyles();
   const [open, setOpen] = React.useState();
+  const alertMsg = useSelector((state) => state.camera.alertMsg);
   const handleClose = () => {
-    if (props.update) setTimeout(() => props.setUpdate(false), 1000);
     setOpen(false);
   };
   React.useEffect(() => {
-    if (props.msg) setOpen(true);
-  }, [props.msg]);
+    if (alertMsg) setOpen(true);
+  }, [alertMsg]);
+  const { type, color, text } = alertMsg ? alertMsg : {};
   return (
     <Snackbar
       anchorOrigin={{
@@ -35,15 +36,16 @@ export default function Alert(props) {
       }}
       className={classes.alert}
       open={open}
-      autoHideDuration={props.update ? 3500 : 1200}
+      autoHideDuration={type === "update" ? 4000 : 1200}
       onClose={handleClose}
     >
       <SnackbarContent
         classes={{ root: classes.root }}
-        message={props.msg}
+        style={{ backgroundColor: color }}
+        message={text}
         action={
           <>
-            {!props.update && (
+            {type === "success" && (
               <IconButton size="small" aria-label="success" color="inherit">
                 <CheckCircleOutlineIcon fontSize="small" />
               </IconButton>

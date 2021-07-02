@@ -1,7 +1,6 @@
 import Paper from "@material-ui/core/Paper";
 import Backdrop from "@material-ui/core/Backdrop";
 import { makeStyles } from "@material-ui/core/styles";
-import Grow from "@material-ui/core/Grow";
 import pigWait from "../images/pig_wait.svg";
 
 const useStyles = makeStyles((theme) => ({
@@ -46,6 +45,8 @@ const loadingMsgs = [
   "It's a lovely day today.",
   "Have a great day.",
   "Patience is key.",
+  "How are you today?",
+  "Don't lose 'Focus'.",
 ];
 
 export default function Loading(props) {
@@ -54,19 +55,15 @@ export default function Loading(props) {
     <>
       <Backdrop className={classes.backdrop} open={props.hidden ? false : true}>
         <Paper elevation={2} className={classes.container}>
-          <Grow in={true}>
-            <div>
-              <div className={classes.waitImgContainer + " pig"}>
-                <img alt="pig saying wait" width="100%" src={pigWait} />
-              </div>
-              <p className={classes.cameraInstruction}>
-                {props.text}
-                <br></br>
-                <br></br>
-                {loadingMsgs[Math.floor(Math.random() * loadingMsgs.length)]}
-              </p>
-            </div>
-          </Grow>
+          <div className={classes.waitImgContainer + " pig"}>
+            <img alt="pig saying wait" width="100%" src={pigWait} />
+          </div>
+          <p className={classes.cameraInstruction}>
+            {props.text}
+            <br></br>
+            <br></br>
+            {loadingMsgs[Math.floor(Math.random() * loadingMsgs.length)]}
+          </p>
         </Paper>
       </Backdrop>
     </>

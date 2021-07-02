@@ -82,7 +82,7 @@ export default function AttributeConfirm(props) {
               className={classes.dialogText}
               id="alert-dialog-description"
             >
-              {`PdfOnline is a labour of love which took hours & hours worth of work, and it will always be
+              {`ScanOnline is a labour of love which took hours & hours worth of work, and it will always be
       absolutely free. It's not required, but we'd really appreciate if you would allow us to include
       our name in your creation. Thanks.`}
             </DialogContentText>

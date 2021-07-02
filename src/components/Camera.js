@@ -2,24 +2,6 @@ import { useSelector, useDispatch } from "react-redux";
 import { useEffect, useRef, useState } from "react";
 import { closeCamera, loadEditor } from "../redux/actions/cameraActions";
 import Loading from "./Loading";
-import imageCompression from "browser-image-compression";
-
-async function compressImage(file, callback) {
-  const options = {
-    maxSizeMB: 0.1,
-    maxWidthOrHeight: undefined,
-    exifOrientation: 0,
-  };
-  try {
-    const minFile = await imageCompression(file, options);
-    return await imageCompression.getDataUrlFromFile(minFile);
-  } catch (err) {
-    console.log(
-      `For some reason, we couldn't minify this file ${file.fileName}`
-    );
-    return file;
-  }
-}
 
 export default function Camera(props) {
   const dispatch = useDispatch();
@@ -37,14 +19,17 @@ export default function Camera(props) {
     let files = e.currentTarget.files;
     if (files[0]) {
       setReaderWorking(true);
-      const minFileSrc = await compressImage(files[0]);
-      setReaderWorking(false);
-      dispatch(loadEditor(minFileSrc));
+      const reader = new FileReader();
+      reader.readAsDataURL(files[0]);
+      reader.onload = () => {
+        setReaderWorking(false);
+        dispatch(loadEditor(reader.result));
+      };
     }
   };
   return (
     <>
-      <Loading text="Loading & compressing Image..." hidden={!readerWorking} />
+      <Loading text="Loading Image..." hidden={!readerWorking} />
       <input
         onInput={handleChange}
         hidden

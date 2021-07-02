@@ -4,7 +4,7 @@ import "cropperjs/dist/cropper.css";
 import Backdrop from "@material-ui/core/Backdrop";
 import Button from "@material-ui/core/Button";
 import Paper from "@material-ui/core/Paper";
-import { makeStyles } from "@material-ui/core/styles";
+import { makeStyles, useTheme } from "@material-ui/core/styles";
 import Grow from "@material-ui/core/Grow";
 import {
   addNewPicture,
@@ -52,6 +52,7 @@ const useStyles = makeStyles((theme) => ({
 
 export const Editor = (props) => {
   const classes = useStyles();
+  const theme = useTheme();
   const dispatch = useDispatch();
   const [cropper, setCropper] = useState();
   const editIndex = useSelector((state) => state.camera.editIndex);
@@ -69,7 +70,13 @@ export const Editor = (props) => {
           addEditedPicture(cropper.getCroppedCanvas().toDataURL(), editIndex)
         );
       } else {
-        dispatch(setAlertMsg(`${scannedImages.length + 1} photo added.`));
+        dispatch(
+          setAlertMsg({
+            type: "photoAdd",
+            color: theme.palette.secondary.success,
+            text: `${scannedImages.length + 1} photo added.`,
+          })
+        );
         dispatch(addNewPicture(cropper.getCroppedCanvas().toDataURL()));
       }
     }
@@ -77,10 +84,6 @@ export const Editor = (props) => {
   };
 
   const handleSkip = () => {
-    if (editIndex === null) {
-      dispatch(setAlertMsg(`${scannedImages.length + 1} photo added.`));
-      dispatch(addNewPicture(props.src));
-    }
     cleanUp();
   };
   return (

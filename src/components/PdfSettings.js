@@ -8,36 +8,36 @@ import Typography from "@material-ui/core/Typography";
 import { useDispatch } from "react-redux";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
 import Paper from "@material-ui/core/Paper";
-import Grow from "@material-ui/core/Grow";
 import FavoriteIcon from "@material-ui/icons/Favorite";
-import GetAppIcon from "@material-ui/icons/GetApp";
 import AttributeConfirm from "./AttributeConfirm";
 import CloseIcon from "@material-ui/icons/Close";
 import IconButton from "@material-ui/core/IconButton";
 import byebye from "../images/byebye.svg";
-import { del, set, get } from "idb-keyval";
+import { set, get } from "idb-keyval";
 import { setDownloadSettings } from "../redux/actions/cameraActions";
+import VisibilityIcon from "@material-ui/icons/Visibility";
+import Grow from "@material-ui/core/Grow";
 
 const useStyles = makeStyles((theme) => ({
   container: {
-    height: 350,
+    height: "50%",
+    maxHeight: 500,
     width: "60%",
     left: "20%",
-    top: 160,
+    top: "25%",
     minWidth: 320,
     position: "absolute",
     overflow: "hidden",
     boxSizing: "border-box",
     [theme.breakpoints.down("sm")]: {
       width: "90%",
-      top: "30%",
       left: "5%",
       minHeight: 350,
     },
     [theme.breakpoints.down("xs")]: {
       height: "60%",
-      minHeight: 400,
       top: "20%",
+      minHeight: 400,
     },
   },
   root: {
@@ -113,9 +113,9 @@ const useStyles = makeStyles((theme) => ({
     right: 5,
   },
   downloadBtn: {
-    background: theme.palette.secondary.success,
+    background: theme.palette.secondary.lightIcon,
     "&:hover": {
-      background: "#1d9a5a",
+      background: "#ef1388",
     },
   },
   closingWords: {
@@ -204,9 +204,7 @@ export default function PdfSettings(props) {
     const roll = rollRef.current.value;
     const faculty = facultyRef.current.value;
     const settings = { title, name, roll, faculty, attributed };
-    del("images").then(() => {
-      dispatch(setDownloadSettings(settings));
-    });
+    dispatch(setDownloadSettings(settings));
   };
 
   React.useEffect(() => {
@@ -351,8 +349,8 @@ export default function PdfSettings(props) {
                   color="secondary"
                   style={{ fontSize: 12 }}
                 >
-                  {downloading ? "Preparing download" : "Download your PDF"}
-                  <GetAppIcon style={{ position: "relative ", left: 10 }} />
+                  {downloading ? "Preparing Preview" : "Preview"}
+                  <VisibilityIcon style={{ position: "relative ", left: 10 }} />
                 </Button>
               </>
             ) : null}

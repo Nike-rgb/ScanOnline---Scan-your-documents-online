@@ -16,18 +16,16 @@ import FinishPage from "./components/FinishPage";
 import FAQ from "./components/FAQ";
 import Camera from "./components/Camera";
 import { set, del } from "idb-keyval";
+import { useTheme } from "@material-ui/core/styles";
 const PdfSettings = lazy(() => import("./components/PdfSettings"));
-const PdfReview = lazy(() => import("./components/PdfReview"));
+const PdfPreview = lazy(() => import("./components/PdfPreview"));
 
 const useStyles = makeStyles((theme) => ({
   instruction2: {
     position: "absolute",
-    top: 620,
     left: 15,
+    top: "95%",
     zIndex: -1,
-    [theme.breakpoints.down("xs")]: {
-      top: "95%",
-    },
   },
 }));
 
@@ -40,8 +38,7 @@ function saveToLocal(arr, imagesUploaded) {
 export default function App(props) {
   const classes = useStyles();
   const dispatch = useDispatch();
-  const [update, setUpdate] = useState(false);
-  const alertMsg = useSelector((state) => state.camera.alertMsg);
+  const theme = useTheme();
   const imagesUploaded = useSelector((state) => state.camera.imagesUploaded);
   const previewMenuOpen = useSelector((state) => state.camera.previewMenuOpen);
   const editorData = useSelector((state) => state.camera.editorData);
@@ -51,16 +48,21 @@ export default function App(props) {
     (state) => state.camera.downloadSettings
   );
   useEffect(() => {
-    setUpdate(true);
-    dispatch(setAlertMsg("v1.0.2 Bug fixes: PDF rendering issue resolved."));
-  }, [dispatch]);
+    dispatch(
+      setAlertMsg({
+        type: "update",
+        color: theme.palette.secondary.update,
+        text: "v1.0.3 is a unstable version. Expect some minor changes. Stable version coming soon.",
+      })
+    );
+  }, [theme.palette.secondary.update, dispatch]);
   const scannedImages = useSelector((state) => state.camera.scannedImages);
   useEffect(() => {
     saveToLocal(scannedImages, imagesUploaded);
   }, [scannedImages, imagesUploaded]);
   return (
     <>
-      <Alert setUpdate={setUpdate} update={update} msg={alertMsg} />
+      <Alert />
       <NavBar openFaq={openFaq} setOpenFaq={setOpenFaq} finishing={finishing} />
       {!imagesUploaded && <LandingPage />}
       <PreviewMenu previewMenuOpen={previewMenuOpen} />
@@ -95,7 +97,7 @@ export default function App(props) {
         </Typography>
       </Grow>
       <Suspense fallback={<Loading text="Preparing your PDF..." />}>
-        {downloadSettings && <PdfReview downloadSettings={downloadSettings} />}
+        {downloadSettings && <PdfPreview downloadSettings={downloadSettings} />}
       </Suspense>
     </>
   );
