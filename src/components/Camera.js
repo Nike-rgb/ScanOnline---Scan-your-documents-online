@@ -27,6 +27,7 @@ export default function Camera(props) {
       };
     }
   };
+
   return (
     <>
       <Loading text="Loading Image..." hidden={!readerWorking} />

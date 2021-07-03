@@ -44,6 +44,7 @@ export default function App(props) {
   const editorData = useSelector((state) => state.camera.editorData);
   const [finishing, setFinishing] = useState(false);
   const [openFaq, setOpenFaq] = useState(false);
+  const [previewOpen, setPreviewOpen] = useState(false);
   const downloadSettings = useSelector(
     (state) => state.camera.downloadSettings
   );
@@ -72,7 +73,12 @@ export default function App(props) {
       )}
       <FAQ openFaq={openFaq} />
       <Suspense fallback={<Loading text="Loading settings..." />}>
-        {finishing && <PdfSettings setFinishing={setFinishing} />}
+        {finishing && (
+          <PdfSettings
+            setPreviewOpen={setPreviewOpen}
+            setFinishing={setFinishing}
+          />
+        )}
       </Suspense>
       <Camera />
       <Grow in={imagesUploaded}>
@@ -97,7 +103,13 @@ export default function App(props) {
         </Typography>
       </Grow>
       <Suspense fallback={<Loading text="Preparing your PDF..." />}>
-        {downloadSettings && <PdfPreview downloadSettings={downloadSettings} />}
+        {previewOpen && (
+          <PdfPreview
+            previewOpen={previewOpen}
+            setPreviewOpen={setPreviewOpen}
+            downloadSettings={downloadSettings}
+          />
+        )}
       </Suspense>
     </>
   );

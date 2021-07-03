@@ -17,6 +17,8 @@ import { set, get } from "idb-keyval";
 import { setDownloadSettings } from "../redux/actions/cameraActions";
 import VisibilityIcon from "@material-ui/icons/Visibility";
 import Grow from "@material-ui/core/Grow";
+import Checkbox from "@material-ui/core/Checkbox";
+import PhotoFilterIcon from "@material-ui/icons/PhotoFilter";
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -152,6 +154,23 @@ const useStyles = makeStyles((theme) => ({
       width: "80%",
     },
   },
+  applyEffectsConfirm: {
+    position: "absolute",
+    bottom: "15%",
+    left: "30%",
+    width: "40%",
+    color: "#351b9c",
+    [theme.breakpoints.down("sm")]: {
+      bottom: "50%",
+      width: "100%",
+      left: 0,
+    },
+    [theme.breakpoints.down("xs")]: {
+      left: "5%",
+      width: "90%",
+      fontSize: 14,
+    },
+  },
 }));
 
 export default function PdfSettings(props) {
@@ -170,7 +189,9 @@ export default function PdfSettings(props) {
   const [downloading, setDownloading] = React.useState(false);
   const [settings, setSettings] = React.useState({});
   const [title, setTitle] = React.useState(null);
+  const [effectsOn, setEffectsOn] = React.useState(false);
   const steps = ["Title of PDF", "Your Name", "Roll n.o", "Faculty"];
+  steps.length += 1;
   const stepLabels = [
     "This is the title that appears on the front of your pdf (Required)",
     "Your name will help others to know who created it. (optional)",
@@ -181,8 +202,11 @@ export default function PdfSettings(props) {
     props.setFinishing(false);
   };
   const handleNext = () => {
-    setActiveStep((prevActiveStep) => prevActiveStep + 1);
-    if (activeStep === steps.length - 1) {
+    if (activeStep === 0) {
+      const title = titleRef.current.value;
+      document.title = title + " | ScanOnline";
+    }
+    if (activeStep === steps.length - 2) {
       const title = titleRef.current.value;
       const name = nameRef.current.value;
       const roll = rollRef.current.value;
@@ -191,6 +215,7 @@ export default function PdfSettings(props) {
       set("settings", settings);
       sessionStorage.setItem("title", title);
     }
+    setActiveStep((prevActiveStep) => prevActiveStep + 1);
   };
   const handleBack = () => {
     if (activeStep !== 0) setActiveStep((prevActiveStep) => prevActiveStep - 1);
@@ -203,8 +228,9 @@ export default function PdfSettings(props) {
     const name = nameRef.current.value;
     const roll = rollRef.current.value;
     const faculty = facultyRef.current.value;
-    const settings = { title, name, roll, faculty, attributed };
+    const settings = { title, name, roll, faculty, attributed, effectsOn };
     dispatch(setDownloadSettings(settings));
+    props.setPreviewOpen(true);
   };
 
   React.useEffect(() => {
@@ -317,6 +343,27 @@ export default function PdfSettings(props) {
               className={classes.formInput}
               placeholder="eg. Science"
             />
+            <div
+              style={{ display: activeStep === 4 ? "block" : "none" }}
+              className={classes.applyEffectsConfirm}
+            >
+              <div
+                style={{
+                  position: "absolute",
+                  bottom: "105%",
+                  width: "100%",
+                  textAlign: "center",
+                }}
+              >
+                <PhotoFilterIcon style={{ fontSize: 60, color: "#ad2faf" }} />
+              </div>
+              Apply effects to your photos to make text more readable?
+              <Checkbox
+                checked={effectsOn}
+                onChange={() => setEffectsOn((prev) => !prev)}
+                inputProps={{ "aria-label": "Apply effects to photos" }}
+              />
+            </div>
           </form>
           <div className={classes.btnContainer}>
             {activeStep !== steps.length ? (

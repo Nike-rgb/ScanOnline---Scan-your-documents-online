@@ -4,8 +4,6 @@ import { useRef, useEffect } from "react";
 import { useSelector } from "react-redux";
 import Paper from "@material-ui/core/Paper";
 import { makeStyles } from "@material-ui/styles";
-import { setDownloadSettings } from "../redux/actions/cameraActions";
-import { useDispatch } from "react-redux";
 import CloseIcon from "@material-ui/icons/Close";
 import IconButton from "@material-ui/core/IconButton";
 import { del } from "idb-keyval";
@@ -37,6 +35,7 @@ const useStyles = makeStyles((theme) => ({
     position: "absolute",
     bottom: 5,
     left: 5,
+    fontSize: 12,
     background: theme.palette.secondary.success,
     "&:hover": {
       background: "#1d9a5a",
@@ -45,13 +44,12 @@ const useStyles = makeStyles((theme) => ({
   closeBtnContainer: {
     position: "absolute",
     top: 5,
-    right: 15,
+    right: 25,
   },
 }));
 
 export default function PdfPreview(props) {
   const classes = useStyles();
-  const dispatch = useDispatch();
   const iframeRef = useRef();
   const scannedImages = useSelector((state) => state.camera.scannedImages);
   const print = () => {
@@ -67,7 +65,6 @@ export default function PdfPreview(props) {
     });
   };
   useEffect(() => {
-    console.log(scannedImages);
     const pdf = pdfMarkup(props.downloadSettings, scannedImages);
     let WinPrint = window.open(
       "",
@@ -79,14 +76,18 @@ export default function PdfPreview(props) {
     WinPrint.close();
   }, [props.downloadSettings, scannedImages]);
   const handleClose = () => {
-    dispatch(setDownloadSettings(null));
+    props.setPreviewOpen(false);
   };
   return (
     <>
       <div>
         <Paper className={classes.container} elevation={4}>
           <div className={classes.closeBtnContainer}>
-            <IconButton aria-label="close-menu" onClick={handleClose}>
+            <IconButton
+              style={{ background: "white", padding: 5 }}
+              aria-label="close-menu"
+              onClick={handleClose}
+            >
               <CloseIcon />
             </IconButton>
           </div>

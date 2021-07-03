@@ -13,13 +13,13 @@ import { useState } from "react";
 
 const useStyles = makeStyles((theme) => ({
   previewContainer: {
-    height: 120,
+    height: 148,
     width: 90,
     position: "relative",
     transition: "transform 1s ease, opacity 0.1s ease",
   },
   preview: {
-    height: 85,
+    height: 113,
     width: 85,
     cursor: "pointer",
     position: "absolute",
@@ -46,7 +46,7 @@ const useStyles = makeStyles((theme) => ({
     position: "absolute",
     width: "100%",
     height: 35,
-    top: 85,
+    top: 113,
     left: 0,
   },
   tool: {
