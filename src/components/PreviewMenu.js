@@ -14,7 +14,8 @@ const useStyles = makeStyles((theme) => ({
     position: "absolute",
     top: 50,
     right: "2%",
-    height: 310,
+    height: 370,
+    overflow: "hidden",
     zIndex: 4,
     [theme.breakpoints.down("xs")]: {
       height: 425,

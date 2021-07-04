@@ -186,7 +186,6 @@ export default function PdfSettings(props) {
   const [attributed, setAttributed] = React.useState(false);
   const [btnValid, setBtnValid] = React.useState(false);
   const [open, setOpen] = React.useState(false);
-  const [downloading, setDownloading] = React.useState(false);
   const [settings, setSettings] = React.useState({});
   const [title, setTitle] = React.useState(null);
   const [effectsOn, setEffectsOn] = React.useState(false);
@@ -222,8 +221,6 @@ export default function PdfSettings(props) {
   };
 
   const handleDownload = () => {
-    setDownloading(true);
-    setTimeout(() => setDownloading(false), 1000);
     const title = titleRef.current.value;
     const name = nameRef.current.value;
     const roll = rollRef.current.value;
@@ -396,7 +393,7 @@ export default function PdfSettings(props) {
                   color="secondary"
                   style={{ fontSize: 12 }}
                 >
-                  {downloading ? "Preparing Preview" : "Preview"}
+                  {"Preview"}
                   <VisibilityIcon style={{ position: "relative ", left: 10 }} />
                 </Button>
               </>

@@ -45,6 +45,9 @@ const useStyles = makeStyles((theme) => ({
     position: "absolute",
     top: 5,
     right: 25,
+    [theme.breakpoints.down('xs')]: {
+      right: 10,
+    }
   },
 }));
 

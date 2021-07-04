@@ -108,11 +108,11 @@ export default function pdfMarkup(settings, images) {
                     <div class="page" style="background: #1c1a3a;overflow-x: hidden; position: relative; border: 3px solid black;">
                         <img alt="Scanned Image" style="${styles.image} ${
                   effectsOn
-                    ? "filter: grayscale(100%) contrast(1.6) brightness(70%) invert(0.05)"
+                    ? "filter:contrast(1.8) brightness(90%) grayscale(100%)"
                     : ""
                 }" src=${src} />
                         <div style="position: absolute; bottom: 4px; right: ${
-                          (index + 1) % 2 ? "5px" : "95%"
+                          (index + 1) % 2 ? "5px" : "93%"
                         }; font-size: 16px;    background: white; width: 20px; height: 20px; border-radius: 70%;
                           text-align: center;">${index + 1}</div>
                     </div>
