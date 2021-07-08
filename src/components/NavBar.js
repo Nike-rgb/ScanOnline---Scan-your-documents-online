@@ -7,7 +7,7 @@ import ImageIcon from "@material-ui/icons/Image";
 import ContactSupportIcon from "@material-ui/icons/ContactSupport";
 import IconButton from "@material-ui/core/IconButton";
 import { togglePreviewMenu } from "../redux/actions/cameraActions";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import logo from "../images/logo.png";
 
 const useStyles = makeStyles((theme) => ({
@@ -37,7 +37,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function Navbar(props) {
-  const imagesUploaded = useSelector((state) => state.camera.imagesUploaded);
+  const imagesUploaded = props.imagesUploaded;
   const classes = useStyles();
   const dispatch = useDispatch();
   const handleTogglePreviewMenu = () => {

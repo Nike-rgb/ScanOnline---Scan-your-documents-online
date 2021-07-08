@@ -12,51 +12,9 @@ export function closeCamera() {
   };
 }
 
-export function addNewPicture(data, index) {
-  return {
-    type: actionTypes.ADD_NEW_PICTURE,
-    data,
-  };
-}
-
-export function addEditedPicture(data, index) {
-  return {
-    type: actionTypes.ADD_EDITED_PICTURE,
-    data,
-    index,
-  };
-}
-
 export function togglePreviewMenu() {
   return {
     type: actionTypes.TOGGLE_PREVIEW_MENU,
-  };
-}
-
-export function removePhoto(index) {
-  return {
-    type: actionTypes.REMOVE_PHOTO,
-    data: index,
-  };
-}
-
-export function moveImages(rearrangeOrder) {
-  return {
-    type: actionTypes.MOVE_IMAGES,
-    data: rearrangeOrder,
-  };
-}
-
-export function setImagesUploaded() {
-  return {
-    type: actionTypes.IMAGES_UPLOADED,
-  };
-}
-
-export function setPrevImages(images) {
-  return {
-    type: actionTypes.SET_PREV_IMAGES,
-    data: images,
   };
 }
 

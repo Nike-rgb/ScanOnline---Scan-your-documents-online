@@ -40,7 +40,7 @@ const styles = {
 };
 
 export default function pdfMarkup(settings, images) {
-  const { title, name, roll, faculty, attributed, effectsOn } = settings
+  const { name, title, roll, faculty, attributed, effectsOn } = settings
     ? settings
     : {};
   return `
@@ -50,7 +50,7 @@ export default function pdfMarkup(settings, images) {
               <meta charset="UTF-8">
               <meta http-equiv="X-UA-Compatible" content="IE=edge">
               <meta name="viewport" content="width=device-width, initial-scale=1.0">
-              <title>New Pdf</title>
+              <title>ScanOnline</title>
             </head>
             <link
               href="https://fonts.googleapis.com/css2?family=Roboto&display=swap"

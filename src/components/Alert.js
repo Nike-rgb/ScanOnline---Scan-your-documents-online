@@ -36,7 +36,7 @@ export default function Alert(props) {
       }}
       className={classes.alert}
       open={open}
-      autoHideDuration={type === "update" ? 4000 : 1200}
+      autoHideDuration={type === "update" ? 5000 : 1200}
       onClose={handleClose}
     >
       <SnackbarContent

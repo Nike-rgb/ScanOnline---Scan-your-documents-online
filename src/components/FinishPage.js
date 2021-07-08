@@ -2,7 +2,7 @@ import Paper from "@material-ui/core/Paper";
 import { makeStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { openCamera } from "../redux/actions/cameraActions";
 import CameraIcon from "@material-ui/icons/Camera";
 import Grow from "@material-ui/core/Grow";
@@ -71,7 +71,7 @@ export default function FinishPage(props) {
   const handleOpenCamera = () => {
     dispatch(openCamera());
   };
-  const scannedImages = useSelector((state) => state.camera.scannedImages);
+  const scannedImages = props.scannedImages;
   useEffect(() => {
     if (!scannedImages.length) {
       setBtnValid(false);

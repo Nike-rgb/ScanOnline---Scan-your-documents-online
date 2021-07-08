@@ -11,7 +11,7 @@ import { clientsClaim } from "workbox-core";
 import { ExpirationPlugin } from "workbox-expiration";
 import { precacheAndRoute, createHandlerBoundToURL } from "workbox-precaching";
 import { registerRoute } from "workbox-routing";
-import { StaleWhileRevalidate } from "workbox-strategies";
+import { StaleWhileRevalidate, NetworkFirst } from "workbox-strategies";
 
 clientsClaim();
 
@@ -40,6 +40,12 @@ registerRoute(
     if (url.pathname.match(fileExtensionRegexp)) {
       return false;
     } // Return true to signal that we want to use the handler.
+    if (url.pathname.endsWith(".js")) {
+      return false;
+    }
+    if (url.pathname.endsWith(".css")) {
+      return false;
+    }
 
     return true;
   },
@@ -59,6 +65,15 @@ registerRoute(
       // least-recently used images are removed.
       new ExpirationPlugin({ maxEntries: 50 }),
     ],
+  })
+);
+
+registerRoute(
+  ({ url }) =>
+    url.origin === self.location.origin && url.pathname.endsWith(".json"),
+  new NetworkFirst({
+    cacheName: "jsons",
+    plugins: [new ExpirationPlugin({ maxEnteries: 50 })],
   })
 );
 

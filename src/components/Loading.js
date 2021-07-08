@@ -2,6 +2,7 @@ import Paper from "@material-ui/core/Paper";
 import Backdrop from "@material-ui/core/Backdrop";
 import { makeStyles } from "@material-ui/core/styles";
 import pigWait from "../images/pig_wait.svg";
+import { useState, useEffect } from "react";
 
 const useStyles = makeStyles((theme) => ({
   backdrop: {
@@ -51,6 +52,10 @@ const loadingMsgs = [
 
 export default function Loading(props) {
   const classes = useStyles();
+  const [loadingMsg, setLoadingMsg] = useState("");
+  useEffect(() => {
+    setLoadingMsg(loadingMsgs[Math.floor(Math.random() * loadingMsgs.length)]);
+  }, []);
   return (
     <>
       <Backdrop className={classes.backdrop} open={props.hidden ? false : true}>
@@ -62,7 +67,7 @@ export default function Loading(props) {
             {props.text}
             <br></br>
             <br></br>
-            {loadingMsgs[Math.floor(Math.random() * loadingMsgs.length)]}
+            {loadingMsg}
           </p>
         </Paper>
       </Backdrop>

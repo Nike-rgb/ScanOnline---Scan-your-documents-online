@@ -10,6 +10,8 @@ import frog from "../images/frog.svg";
 import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
+import { setDownloadSettings } from "../redux/actions/cameraActions";
+import { useDispatch } from "react-redux";
 
 const useStyles = makeStyles((theme) => ({
   alert: {
@@ -54,18 +56,28 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 });
 
 export default function AttributeConfirm(props) {
+  const dispatch = useDispatch();
   const classes = useStyles();
+  const [thanks, setThanks] = React.useState(false);
   const handleAttributeUs = () => {
-    props.setAttributed((prev) => !prev);
+    let settings = props.open.settings;
+    settings.attributed = true;
+    setThanks(true);
+    dispatch(setDownloadSettings(settings));
     setTimeout(() => props.setOpen(false), 600);
   };
   const handleDontAttribute = () => {
-    props.setOpen(false);
+    let settings = props.open.settings;
+    settings.attributed = false;
+    dispatch(setDownloadSettings(settings));
+    props.setOpen((prev) => ({
+      status: false,
+    }));
   };
   return (
     <>
       <Dialog
-        open={props.open}
+        open={!!props.open.status}
         classes={{ paper: classes.alert }}
         TransitionComponent={Transition}
         transitionDuration={500}
@@ -73,7 +85,7 @@ export default function AttributeConfirm(props) {
         aria-describedby="alert-dialog-description"
       >
         <div>
-          <img alt="frog-on-a-leat" className={classes.frogIcon} src={frog} />
+          <img alt="frog-on-a-leaf" className={classes.frogIcon} src={frog} />
         </div>
         <div className={classes.dialogActionArea}>
           <DialogTitle id="alert-dialog-title">Attribute us?</DialogTitle>
@@ -91,13 +103,13 @@ export default function AttributeConfirm(props) {
             <FormControlLabel
               control={
                 <Checkbox
-                  checked={props.attributed}
+                  checked={props.thanks}
                   onChange={handleAttributeUs}
                   name="attribute-us"
                   color="primary"
                 />
               }
-              label={props.attributed ? "Thanks!" : "Attribute us?"}
+              label={thanks ? "Thanks!" : "Attribute us?"}
             />
             <Button
               color="primary"

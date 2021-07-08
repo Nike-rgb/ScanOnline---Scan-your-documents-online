@@ -1,12 +1,14 @@
 import { useSelector, useDispatch } from "react-redux";
 import { useEffect, useRef, useState } from "react";
-import { closeCamera, loadEditor } from "../redux/actions/cameraActions";
+import { closeCamera } from "../redux/actions/cameraActions";
 import Loading from "./Loading";
+import imageCompression from "browser-image-compression";
 
 export default function Camera(props) {
   const dispatch = useDispatch();
   const cameraOpen = useSelector((state) => state.camera.cameraOpen);
   const [readerWorking, setReaderWorking] = useState(false);
+  const [progress, setProgress] = useState(0);
   const cameraRef = useRef();
   useEffect(() => {
     if (cameraOpen) {
@@ -17,20 +19,30 @@ export default function Camera(props) {
 
   const handleChange = async (e) => {
     let files = e.currentTarget.files;
+    const options = {
+      maxSizeMB: 0.2,
+      onProgress: function (progressPercent) {
+        setProgress(progressPercent);
+      },
+      useWebWorker: true,
+      maxIteration: 10,
+      exifOrientation: 2,
+    };
     if (files[0]) {
       setReaderWorking(true);
-      const reader = new FileReader();
-      reader.readAsDataURL(files[0]);
-      reader.onload = () => {
-        setReaderWorking(false);
-        dispatch(loadEditor(reader.result));
-      };
+      const file = await imageCompression(files[0], options);
+      const src = await imageCompression.getDataUrlFromFile(file);
+      setReaderWorking(false);
+      props.setEditorData({ src, editIndex: null });
     }
   };
 
   return (
     <>
-      <Loading text="Loading Image..." hidden={!readerWorking} />
+      <Loading
+        text={`Loading & Compressing Image... ${progress}%`}
+        hidden={!readerWorking}
+      />
       <input
         onInput={handleChange}
         hidden

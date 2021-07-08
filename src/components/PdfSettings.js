@@ -5,7 +5,6 @@ import Step from "@material-ui/core/Step";
 import StepLabel from "@material-ui/core/StepLabel";
 import Button from "@material-ui/core/Button";
 import Typography from "@material-ui/core/Typography";
-import { useDispatch } from "react-redux";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
 import Paper from "@material-ui/core/Paper";
 import FavoriteIcon from "@material-ui/icons/Favorite";
@@ -14,7 +13,6 @@ import CloseIcon from "@material-ui/icons/Close";
 import IconButton from "@material-ui/core/IconButton";
 import byebye from "../images/byebye.svg";
 import { set, get } from "idb-keyval";
-import { setDownloadSettings } from "../redux/actions/cameraActions";
 import VisibilityIcon from "@material-ui/icons/Visibility";
 import Grow from "@material-ui/core/Grow";
 import Checkbox from "@material-ui/core/Checkbox";
@@ -174,7 +172,6 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function PdfSettings(props) {
-  const dispatch = useDispatch();
   const theme = useTheme();
   const titleRef = React.useRef();
   const nameRef = React.useRef();
@@ -183,9 +180,8 @@ export default function PdfSettings(props) {
   const smallDevice = useMediaQuery(theme.breakpoints.down("sm"));
   const classes = useStyles();
   const [activeStep, setActiveStep] = React.useState(0);
-  const [attributed, setAttributed] = React.useState(false);
   const [btnValid, setBtnValid] = React.useState(false);
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = React.useState({});
   const [settings, setSettings] = React.useState({});
   const [title, setTitle] = React.useState(null);
   const [effectsOn, setEffectsOn] = React.useState(false);
@@ -210,7 +206,7 @@ export default function PdfSettings(props) {
       const name = nameRef.current.value;
       const roll = rollRef.current.value;
       const faculty = facultyRef.current.value;
-      const settings = { title, name, roll, faculty, attributed };
+      const settings = { title, name, roll, faculty };
       set("settings", settings);
       sessionStorage.setItem("title", title);
     }
@@ -221,18 +217,19 @@ export default function PdfSettings(props) {
   };
 
   const handleDownload = () => {
-    const title = titleRef.current.value;
-    const name = nameRef.current.value;
-    const roll = rollRef.current.value;
-    const faculty = facultyRef.current.value;
-    const settings = { title, name, roll, faculty, attributed, effectsOn };
-    dispatch(setDownloadSettings(settings));
     props.setPreviewOpen(true);
   };
 
   React.useEffect(() => {
-    if (activeStep === steps.length) setOpen(true);
-  }, [activeStep, steps.length]);
+    if (activeStep === steps.length) {
+      const title = titleRef.current.value;
+      const name = nameRef.current.value;
+      const roll = rollRef.current.value;
+      const faculty = facultyRef.current.value;
+      const settings = { title, name, roll, faculty, effectsOn };
+      setOpen({ settings, status: true });
+    }
+  }, [activeStep, steps.length, effectsOn]);
 
   React.useEffect(() => {
     (async () => {
@@ -249,13 +246,7 @@ export default function PdfSettings(props) {
 
   return (
     <>
-      <AttributeConfirm
-        open={open}
-        setOpen={setOpen}
-        handle
-        attributed={attributed}
-        setAttributed={setAttributed}
-      />
+      <AttributeConfirm open={open} setOpen={setOpen} handle />
       <Grow in={true}>
         <Paper className={classes.container} elevation={4}>
           {activeStep === steps.length && (

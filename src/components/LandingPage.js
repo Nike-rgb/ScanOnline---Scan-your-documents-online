@@ -8,11 +8,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
 import { useDispatch } from "react-redux";
-import {
-  openCamera,
-  setImagesUploaded,
-  setPrevImages,
-} from "../redux/actions/cameraActions";
+import { openCamera } from "../redux/actions/cameraActions";
 import CameraIcon from "@material-ui/icons/Camera";
 import Slide from "@material-ui/core/Slide";
 import { forwardRef, useState, useEffect } from "react";
@@ -109,33 +105,34 @@ const Transition = forwardRef(function Transition(props, ref) {
 export default function LandingPage(props) {
   const classes = useStyles();
   const dispatch = useDispatch();
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState({});
   useEffect(() => {
     get("images").then((val) => {
-      if (val) setOpen(true);
+      if (val)
+        setOpen({
+          open: true,
+          val,
+        });
     });
   }, []);
   const handleOpenCamera = () => {
     dispatch(openCamera());
   };
   const handleCloseAlert = () => {
-    setOpen(false);
-    dispatch(setImagesUploaded());
-    get("images").then((images) => {
-      dispatch(setPrevImages(images));
-    });
+    props.setScannedImages(open.val);
+    setOpen({});
   };
   const handleDeleteFromLocal = () => {
     del("images");
-    setOpen(false);
+    setOpen({});
   };
   return (
     <>
       <Dialog
-        open={open}
+        open={Boolean(open.open)}
         classes={{ paper: classes.alert }}
         TransitionComponent={Transition}
-        transitionDuration={500}
+        transitionDuration={200}
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >

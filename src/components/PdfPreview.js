@@ -1,7 +1,6 @@
 import pdfMarkup from "../services/createPdf";
 import Button from "@material-ui/core/Button";
 import { useRef, useEffect } from "react";
-import { useSelector } from "react-redux";
 import Paper from "@material-ui/core/Paper";
 import { makeStyles } from "@material-ui/styles";
 import CloseIcon from "@material-ui/icons/Close";
@@ -45,16 +44,17 @@ const useStyles = makeStyles((theme) => ({
     position: "absolute",
     top: 5,
     right: 25,
-    [theme.breakpoints.down('xs')]: {
+    [theme.breakpoints.down("xs")]: {
       right: 10,
-    }
+    },
   },
 }));
 
 export default function PdfPreview(props) {
   const classes = useStyles();
   const iframeRef = useRef();
-  const scannedImages = useSelector((state) => state.camera.scannedImages);
+  const scannedImages = props.scannedImages;
+  const downloadSettings = props.downloadSettings;
   const print = () => {
     del("images").then(() => {
       let WinPrint = window.open(
@@ -68,22 +68,23 @@ export default function PdfPreview(props) {
     });
   };
   useEffect(() => {
-    const pdf = pdfMarkup(props.downloadSettings, scannedImages);
+    const pdf = pdfMarkup(downloadSettings, scannedImages);
     let WinPrint = window.open(
       "",
       "pdf",
       "left=0,top=0,width=800,height=900,toolbar=0,scrollbars=0,status=0"
     );
-    WinPrint.document.write(pdf);
-    WinPrint.document.close();
+    const doc = WinPrint.document;
+    doc.body.innerHTML = pdf;
+    doc.close();
     WinPrint.close();
-  }, [props.downloadSettings, scannedImages]);
+  }, [downloadSettings, scannedImages]);
   const handleClose = () => {
     props.setPreviewOpen(false);
   };
   return (
     <>
-      <div>
+      <div style={{ display: props.previewOpen ? "block" : "none" }}>
         <Paper className={classes.container} elevation={4}>
           <div className={classes.closeBtnContainer}>
             <IconButton

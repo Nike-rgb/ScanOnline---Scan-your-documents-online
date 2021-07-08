@@ -17,8 +17,8 @@ import FAQ from "./components/FAQ";
 import Camera from "./components/Camera";
 import { set, del } from "idb-keyval";
 import { useTheme } from "@material-ui/core/styles";
+import PdfPreview from "./components/PdfPreview";
 const PdfSettings = lazy(() => import("./components/PdfSettings"));
-const PdfPreview = lazy(() => import("./components/PdfPreview"));
 
 const useStyles = makeStyles((theme) => ({
   instruction2: {
@@ -39,9 +39,10 @@ export default function App(props) {
   const classes = useStyles();
   const dispatch = useDispatch();
   const theme = useTheme();
-  const imagesUploaded = useSelector((state) => state.camera.imagesUploaded);
+  const [imagesUploaded, setImagesUploaded] = useState(false);
   const previewMenuOpen = useSelector((state) => state.camera.previewMenuOpen);
-  const editorData = useSelector((state) => state.camera.editorData);
+  const [editorData, setEditorData] = useState({});
+  const [scannedImages, setScannedImages] = useState([]);
   const [finishing, setFinishing] = useState(false);
   const [openFaq, setOpenFaq] = useState(false);
   const [previewOpen, setPreviewOpen] = useState(false);
@@ -49,27 +50,59 @@ export default function App(props) {
     (state) => state.camera.downloadSettings
   );
   useEffect(() => {
-    dispatch(
-      setAlertMsg({
-        type: "update",
-        color: theme.palette.secondary.update,
-        text: "v1.0.3 is a unstable version. Expect some minor changes. Stable version coming soon.",
-      })
-    );
+    const update = localStorage.getItem("update");
+    const firstInstall = !localStorage.getItem("installed");
+    if (update || firstInstall) {
+      fetch("/release.json")
+        .then((result) => result.json())
+        .then((release) => {
+          const currentVersion = release.current_version;
+          dispatch(
+            setAlertMsg({
+              type: "update",
+              color: theme.palette.secondary.update,
+              text: release[currentVersion]
+                ? release[currentVersion]
+                : `v${release.current_version} app updated. No major releases`,
+            })
+          );
+          localStorage.removeItem("update");
+          if (firstInstall)
+            localStorage.setItem("installed", release.current_version);
+        })
+        .catch(() => console.log(`The app is up to date.`));
+    }
   }, [theme.palette.secondary.update, dispatch]);
-  const scannedImages = useSelector((state) => state.camera.scannedImages);
   useEffect(() => {
     saveToLocal(scannedImages, imagesUploaded);
+    if (!imagesUploaded && scannedImages.length !== 0) setImagesUploaded(true);
   }, [scannedImages, imagesUploaded]);
   return (
     <>
       <Alert />
-      <NavBar openFaq={openFaq} setOpenFaq={setOpenFaq} finishing={finishing} />
-      {!imagesUploaded && <LandingPage />}
-      <PreviewMenu previewMenuOpen={previewMenuOpen} />
-      {editorData && <Editor src={editorData} />}
+      <NavBar
+        imagesUploaded={imagesUploaded}
+        openFaq={openFaq}
+        setOpenFaq={setOpenFaq}
+        finishing={finishing}
+      />
+      {!imagesUploaded && <LandingPage setScannedImages={setScannedImages} />}
+      <PreviewMenu
+        previewMenuOpen={previewMenuOpen}
+        scannedImages={scannedImages}
+        setScannedImages={setScannedImages}
+        setEditorData={setEditorData}
+      />
+      {editorData.src && (
+        <Editor
+          editorData={editorData}
+          setEditorData={setEditorData}
+          scannedImages={scannedImages}
+          setScannedImages={setScannedImages}
+        />
+      )}
       {imagesUploaded && !finishing && (
-        <FinishPage setFinishing={setFinishing} />
+        <FinishPage scannedImages={scannedImages} setFinishing={setFinishing} />
       )}
       <FAQ openFaq={openFaq} />
       <Suspense fallback={<Loading text="Loading settings..." />}>
@@ -80,7 +113,7 @@ export default function App(props) {
           />
         )}
       </Suspense>
-      <Camera />
+      <Camera setEditorData={setEditorData} />
       <Grow in={imagesUploaded}>
         <Typography
           className={classes.instruction2}
@@ -102,15 +135,12 @@ export default function App(props) {
           to edit/delete images
         </Typography>
       </Grow>
-      <Suspense fallback={<Loading text="Preparing your PDF..." />}>
-        {previewOpen && (
-          <PdfPreview
-            previewOpen={previewOpen}
-            setPreviewOpen={setPreviewOpen}
-            downloadSettings={downloadSettings}
-          />
-        )}
-      </Suspense>
+      <PdfPreview
+        previewOpen={previewOpen}
+        setPreviewOpen={setPreviewOpen}
+        downloadSettings={downloadSettings}
+        scannedImages={scannedImages}
+      />
     </>
   );
 }

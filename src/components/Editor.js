@@ -6,14 +6,8 @@ import Button from "@material-ui/core/Button";
 import Paper from "@material-ui/core/Paper";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import Grow from "@material-ui/core/Grow";
-import {
-  addNewPicture,
-  addEditedPicture,
-  closeEditor,
-  removeEditIndex,
-  setAlertMsg,
-} from "../redux/actions/cameraActions";
-import { useDispatch, useSelector } from "react-redux";
+import { setAlertMsg } from "../redux/actions/cameraActions";
+import { useDispatch } from "react-redux";
 import CropFreeIcon from "@material-ui/icons/CropFree";
 
 const useStyles = makeStyles((theme) => ({
@@ -55,20 +49,25 @@ export const Editor = (props) => {
   const theme = useTheme();
   const dispatch = useDispatch();
   const [cropper, setCropper] = useState();
-  const editIndex = useSelector((state) => state.camera.editIndex);
-  const scannedImages = useSelector((state) => state.camera.scannedImages);
-
+  const { src, editIndex } = props.editorData;
+  const scannedImages = props.scannedImages;
   const cleanUp = () => {
-    dispatch(closeEditor());
-    dispatch(removeEditIndex());
+    props.setEditorData({});
+  };
+
+  const replaceWithEdited = (index, src, arr) => {
+    let temp = [...arr];
+    temp.splice(index, 1, src);
+    return temp;
   };
 
   const handleCrop = () => {
     if (typeof cropper !== "undefined") {
       if (editIndex !== null) {
-        dispatch(
-          addEditedPicture(cropper.getCroppedCanvas().toDataURL(), editIndex)
-        );
+        const src = cropper.getCroppedCanvas().toDataURL();
+        props.setScannedImages((prev) => {
+          return replaceWithEdited(editIndex, src, prev);
+        });
       } else {
         dispatch(
           setAlertMsg({
@@ -77,7 +76,10 @@ export const Editor = (props) => {
             text: `${scannedImages.length + 1} photo added.`,
           })
         );
-        dispatch(addNewPicture(cropper.getCroppedCanvas().toDataURL()));
+        props.setScannedImages((prev) => {
+          const src = cropper.getCroppedCanvas().toDataURL();
+          return [...prev, src];
+        });
       }
     }
     cleanUp();
@@ -94,7 +96,7 @@ export const Editor = (props) => {
             className={classes.cropper}
             zoomTo={1}
             initialAspectRatio={1}
-            src={props.src}
+            src={src}
             alt={"Image"}
             viewMode={1}
             guides={true}
