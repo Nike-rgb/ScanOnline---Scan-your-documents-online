@@ -58,7 +58,11 @@ export default function CacheValidator(props) {
     set(time) {
       this.id = setInterval(() => {
         setTime((prev) => {
-          if (prev === 1) hardCacheReset();
+          if (prev === 1) {
+            hardCacheReset();
+            this.clear();
+            return 0;
+          }
           return prev - 1;
         });
       }, time);
