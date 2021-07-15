@@ -39,13 +39,17 @@ const FAQS = [
   {
     question: "Fully offline",
     answer: `Yes, it is a fully offline working app. However, you need an internet connection when you load it the 
-        first time duh, and also for ocassional updates. For best offline experience, add to homescreen. Go give it a try, 
+        first time duh, and also for ocassional updates. For best offline experience, install app on your device. Go give it a try, 
         turn off your internet and reload this page.`,
   },
   {
     question: "Fully integrated PDF viewer",
-    answer: `Once you create your PDF, you can open it right here in the app, if your browser supports it. Otherwise,
-   you'll get prompted for download. Either way, you get your PDF.`,
+    answer: `Once you create your PDF, you can preview right here in the app.`,
+  },
+  {
+    question: "Clean and clear text reading",
+    answer: `We have selected most suitable effects for the text in your photos to 
+    make it easily readable.`,
   },
   {
     question: "Automatic saving of photos",
@@ -70,7 +74,7 @@ const FAQS = [
   },
   {
     question: "How can I contribute?",
-    answer: `You can contact me at nikeshlepcha7@gmail.com. Buy me a coffee. Also if you are a developer,
+    answer: `You can contact me at nikeshlepcha7@gmail.com. Also if you are a developer,
         this project is open source and is on github as 'ScanOnline---Scan-your-documents-online'. Go give it a visit and star it.`,
   },
 ];

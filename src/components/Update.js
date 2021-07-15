@@ -42,7 +42,7 @@ const useStyles = makeStyles((theme) => ({
     position: "absolute",
     width: "90%",
     left: "5%",
-    top: 30,
+    top: 50,
     textAlign: "center",
   },
 }));
@@ -120,7 +120,10 @@ export default function CacheValidator(props) {
             <img alt="Update pic" width="100%" src={updatePic} />
           </div>
           <p className={classes.text}>
-            Update from v{global.appVersion} to v{latestVersion} is available.
+            Update from v
+            <span style={{ color: "red" }}>{global.appVersion}</span> to v
+            <span style={{ color: "lightgreen" }}>{latestVersion}</span> is
+            available.
             <br></br>
             Updating in
             <span style={{ color: theme.palette.secondary.danger }}>

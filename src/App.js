@@ -11,6 +11,7 @@ import pig from "./images/pig.svg";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import Loading from "./components/Loading";
+import Button from "@material-ui/core/Button";
 import PreviewMenu from "./components/PreviewMenu";
 import FinishPage from "./components/FinishPage";
 import FAQ from "./components/FAQ";
@@ -18,6 +19,8 @@ import Camera from "./components/Camera";
 import { set, del } from "idb-keyval";
 import { useTheme } from "@material-ui/core/styles";
 import PdfPreview from "./components/PdfPreview";
+import AddIcon from "@material-ui/icons/Add";
+import useMediaQuery from "@material-ui/core/useMediaQuery";
 const PdfSettings = lazy(() => import("./components/PdfSettings"));
 
 const useStyles = makeStyles((theme) => ({
@@ -26,6 +29,26 @@ const useStyles = makeStyles((theme) => ({
     left: 15,
     top: "95%",
     zIndex: -1,
+  },
+  installBtn: {
+    position: "fixed",
+    bottom: "6%",
+    right: 15,
+    fontWeight: "bold",
+    letterSpacing: 2,
+    background: "#0000ffcf",
+    border: "1px solid #3cbfbfb0",
+    borderRadius: 15,
+    padding: 10,
+    fontSize: 13,
+    "&:hover": {
+      background: "#0000ffcf",
+      border: "black 1px solid",
+    },
+    [theme.breakpoints.down("xs")]: {
+      padding: 6,
+      bottom: "80%",
+    },
   },
 }));
 
@@ -39,9 +62,11 @@ export default function App(props) {
   const classes = useStyles();
   const dispatch = useDispatch();
   const theme = useTheme();
+  const smallDevice = useMediaQuery(theme.breakpoints.down("xs"));
   const [imagesUploaded, setImagesUploaded] = useState(false);
   const previewMenuOpen = useSelector((state) => state.camera.previewMenuOpen);
   const [editorData, setEditorData] = useState({});
+  const [defferedEvent, setDefferedEvent] = useState(null);
   const [scannedImages, setScannedImages] = useState([]);
   const [finishing, setFinishing] = useState(false);
   const [openFaq, setOpenFaq] = useState(false);
@@ -49,6 +74,12 @@ export default function App(props) {
   const downloadSettings = useSelector(
     (state) => state.camera.downloadSettings
   );
+  useEffect(() => {
+    window.addEventListener("beforeinstallprompt", (e) => {
+      e.preventDefault();
+      setDefferedEvent(e);
+    });
+  }, []);
   useEffect(() => {
     const update = localStorage.getItem("update");
     const firstInstall = !localStorage.getItem("installed");
@@ -77,8 +108,36 @@ export default function App(props) {
     saveToLocal(scannedImages, imagesUploaded);
     if (!imagesUploaded && scannedImages.length !== 0) setImagesUploaded(true);
   }, [scannedImages, imagesUploaded]);
+  const handleInstall = () => {
+    if (defferedEvent) {
+      defferedEvent.prompt();
+      setDefferedEvent(null);
+    }
+  };
   return (
     <>
+      <Button
+        className={classes.installBtn}
+        variant="contained"
+        color="primary"
+        onClick={handleInstall}
+        style={{ display: defferedEvent ? "flex" : "none" }}
+      >
+        <div
+          style={{
+            color: "gray",
+            position: "absolute",
+            top: "110%",
+            textAlign: "left",
+            width: "300%",
+            right: smallDevice ? "-70%" : "-90%",
+            fontSize: 12,
+          }}
+        >
+          Runs offline once installed.
+        </div>
+        <AddIcon style={{ position: "relative", left: -5 }} /> Install
+      </Button>
       <Alert />
       <NavBar
         imagesUploaded={imagesUploaded}
