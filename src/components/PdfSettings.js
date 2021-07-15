@@ -5,39 +5,39 @@ import Step from "@material-ui/core/Step";
 import StepLabel from "@material-ui/core/StepLabel";
 import Button from "@material-ui/core/Button";
 import Typography from "@material-ui/core/Typography";
-import { PrintPdf } from "../services/createPdf";
-import { useSelector } from "react-redux";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
 import Paper from "@material-ui/core/Paper";
-import Grow from "@material-ui/core/Grow";
 import FavoriteIcon from "@material-ui/icons/Favorite";
-import GetAppIcon from "@material-ui/icons/GetApp";
 import AttributeConfirm from "./AttributeConfirm";
 import CloseIcon from "@material-ui/icons/Close";
 import IconButton from "@material-ui/core/IconButton";
 import byebye from "../images/byebye.svg";
-import { del, set, get } from "idb-keyval";
+import { set, get } from "idb-keyval";
+import VisibilityIcon from "@material-ui/icons/Visibility";
+import Grow from "@material-ui/core/Grow";
+import Checkbox from "@material-ui/core/Checkbox";
+import PhotoFilterIcon from "@material-ui/icons/PhotoFilter";
 
 const useStyles = makeStyles((theme) => ({
   container: {
-    height: 350,
+    height: "50%",
+    maxHeight: 500,
     width: "60%",
     left: "20%",
-    top: 160,
+    top: "25%",
     minWidth: 320,
     position: "absolute",
     overflow: "hidden",
     boxSizing: "border-box",
     [theme.breakpoints.down("sm")]: {
       width: "90%",
-      top: "30%",
       left: "5%",
       minHeight: 350,
     },
     [theme.breakpoints.down("xs")]: {
       height: "60%",
-      minHeight: 400,
       top: "20%",
+      minHeight: 400,
     },
   },
   root: {
@@ -113,9 +113,9 @@ const useStyles = makeStyles((theme) => ({
     right: 5,
   },
   downloadBtn: {
-    background: theme.palette.secondary.success,
+    background: theme.palette.secondary.lightIcon,
     "&:hover": {
-      background: "#1d9a5a",
+      background: "#ef1388",
     },
   },
   closingWords: {
@@ -152,6 +152,23 @@ const useStyles = makeStyles((theme) => ({
       width: "80%",
     },
   },
+  applyEffectsConfirm: {
+    position: "absolute",
+    bottom: "15%",
+    left: "30%",
+    width: "40%",
+    color: "#351b9c",
+    [theme.breakpoints.down("sm")]: {
+      bottom: "50%",
+      width: "100%",
+      left: 0,
+    },
+    [theme.breakpoints.down("xs")]: {
+      left: "5%",
+      width: "90%",
+      fontSize: 14,
+    },
+  },
 }));
 
 export default function PdfSettings(props) {
@@ -160,17 +177,16 @@ export default function PdfSettings(props) {
   const nameRef = React.useRef();
   const rollRef = React.useRef();
   const facultyRef = React.useRef();
-  const scannedImages = useSelector((state) => state.camera.scannedImages);
   const smallDevice = useMediaQuery(theme.breakpoints.down("sm"));
   const classes = useStyles();
   const [activeStep, setActiveStep] = React.useState(0);
-  const [attributed, setAttributed] = React.useState(false);
   const [btnValid, setBtnValid] = React.useState(false);
-  const [open, setOpen] = React.useState(false);
-  const [downloading, setDownloading] = React.useState(false);
+  const [open, setOpen] = React.useState({});
   const [settings, setSettings] = React.useState({});
   const [title, setTitle] = React.useState(null);
+  const [effectsOn, setEffectsOn] = React.useState(false);
   const steps = ["Title of PDF", "Your Name", "Roll n.o", "Faculty"];
+  steps.length += 1;
   const stepLabels = [
     "This is the title that appears on the front of your pdf (Required)",
     "Your name will help others to know who created it. (optional)",
@@ -181,42 +197,39 @@ export default function PdfSettings(props) {
     props.setFinishing(false);
   };
   const handleNext = () => {
-    setActiveStep((prevActiveStep) => prevActiveStep + 1);
-    if (activeStep === steps.length - 1) {
+    if (activeStep === 0) {
+      const title = titleRef.current.value;
+      document.title = title + " | ScanOnline";
+    }
+    if (activeStep === steps.length - 2) {
       const title = titleRef.current.value;
       const name = nameRef.current.value;
       const roll = rollRef.current.value;
       const faculty = facultyRef.current.value;
-      const settings = { title, name, roll, faculty, attributed };
+      const settings = { title, name, roll, faculty };
       set("settings", settings);
       sessionStorage.setItem("title", title);
     }
+    setActiveStep((prevActiveStep) => prevActiveStep + 1);
   };
   const handleBack = () => {
-    setActiveStep((prevActiveStep) => prevActiveStep - 1);
+    if (activeStep !== 0) setActiveStep((prevActiveStep) => prevActiveStep - 1);
   };
 
   const handleDownload = () => {
-    setDownloading(true);
-    setTimeout(() => setDownloading(false), 1500);
-    const title = titleRef.current.value;
-    const name = nameRef.current.value;
-    const roll = rollRef.current.value;
-    const faculty = facultyRef.current.value;
-    const settings = { title, name, roll, faculty, attributed };
-    del("images").then(() => {
-      PrintPdf(
-        scannedImages.map((image, index) => ({
-          image,
-        })),
-        settings
-      );
-    });
+    props.setPreviewOpen(true);
   };
 
   React.useEffect(() => {
-    if (activeStep === steps.length) setOpen(true);
-  }, [activeStep, steps.length]);
+    if (activeStep === steps.length) {
+      const title = titleRef.current.value;
+      const name = nameRef.current.value;
+      const roll = rollRef.current.value;
+      const faculty = facultyRef.current.value;
+      const settings = { title, name, roll, faculty, effectsOn };
+      setOpen({ settings, status: true });
+    }
+  }, [activeStep, steps.length, effectsOn]);
 
   React.useEffect(() => {
     (async () => {
@@ -233,13 +246,7 @@ export default function PdfSettings(props) {
 
   return (
     <>
-      <AttributeConfirm
-        open={open}
-        setOpen={setOpen}
-        handle
-        attributed={attributed}
-        setAttributed={setAttributed}
-      />
+      <AttributeConfirm open={open} setOpen={setOpen} handle />
       <Grow in={true}>
         <Paper className={classes.container} elevation={4}>
           {activeStep === steps.length && (
@@ -298,7 +305,7 @@ export default function PdfSettings(props) {
               style={{ display: activeStep === 0 ? "inline" : "none" }}
               spellCheck={false}
               className={classes.formInput}
-              placeholder="Title"
+              placeholder="eg. Assignment 1"
             />
             <input
               ref={nameRef}
@@ -306,7 +313,7 @@ export default function PdfSettings(props) {
               style={{ display: activeStep === 1 ? "inline" : "none" }}
               spellCheck={false}
               className={classes.formInput}
-              placeholder="Name"
+              placeholder="eg. John Doe"
             />
             <input
               ref={rollRef}
@@ -314,7 +321,7 @@ export default function PdfSettings(props) {
               style={{ display: activeStep === 2 ? "inline" : "none" }}
               spellCheck={false}
               className={classes.formInput}
-              placeholder="Your Roll n.o"
+              placeholder="eg. 1568"
             />
             <input
               ref={facultyRef}
@@ -322,8 +329,29 @@ export default function PdfSettings(props) {
               style={{ display: activeStep === 3 ? "inline" : "none" }}
               spellCheck={false}
               className={classes.formInput}
-              placeholder="Your faculty"
+              placeholder="eg. Science"
             />
+            <div
+              style={{ display: activeStep === 4 ? "block" : "none" }}
+              className={classes.applyEffectsConfirm}
+            >
+              <div
+                style={{
+                  position: "absolute",
+                  bottom: "105%",
+                  width: "100%",
+                  textAlign: "center",
+                }}
+              >
+                <PhotoFilterIcon style={{ fontSize: 60, color: "#ad2faf" }} />
+              </div>
+              Apply effects to your photos to make text more readable?
+              <Checkbox
+                checked={effectsOn}
+                onChange={() => setEffectsOn((prev) => !prev)}
+                inputProps={{ "aria-label": "Apply effects to photos" }}
+              />
+            </div>
           </form>
           <div className={classes.btnContainer}>
             {activeStep !== steps.length ? (
@@ -341,6 +369,7 @@ export default function PdfSettings(props) {
                   variant="contained"
                   onClick={handleBack}
                   color="primary"
+                  disabled={activeStep === 0 ? true : false}
                 >
                   prev
                 </Button>
@@ -355,8 +384,8 @@ export default function PdfSettings(props) {
                   color="secondary"
                   style={{ fontSize: 12 }}
                 >
-                  {downloading ? "Downloading" : "Download your PDF"}
-                  <GetAppIcon style={{ position: "relative ", left: 10 }} />
+                  {"Preview"}
+                  <VisibilityIcon style={{ position: "relative ", left: 10 }} />
                 </Button>
               </>
             ) : null}

@@ -1,23 +1,23 @@
 {
-  "name": "pdfonline",
-  "version": "0.1.0",
+  "name": "scanonline",
+  "version": "1.3.0",
   "private": true,
   "dependencies": {
     "@material-ui/core": "^4.11.4",
     "@material-ui/icons": "^4.11.2",
-    "@testing-library/jest-dom": "^5.12.0",
+    "@react-pdf/renderer": "^2.0.15",
+    "@testing-library/jest-dom": "^5.14.1",
     "@testing-library/react": "^11.2.7",
     "@testing-library/user-event": "^12.8.3",
-    "idb-keyval": "^5.0.5",
-    "pdfmake": "^0.1.71",
+    "browser-image-compression": "^1.0.14",
+    "idb-keyval": "^5.0.6",
     "react": "^17.0.2",
     "react-cropper": "^2.1.7",
     "react-dom": "^17.0.2",
-    "react-draggable": "^4.4.3",
-    "react-easy-crop": "^3.3.3",
     "react-redux": "^7.2.4",
     "react-scripts": "4.0.3",
     "redux": "^4.1.0",
+    "semver": "^7.3.5",
     "web-vitals": "^1.1.2",
     "workbox-background-sync": "^5.1.4",
     "workbox-broadcast-update": "^5.1.4",
@@ -36,7 +36,9 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "generate-build-version": "node generate-build-version",
+    "prebuild": "npm run generate-build-version"
   },
   "eslintConfig": {
     "extends": [

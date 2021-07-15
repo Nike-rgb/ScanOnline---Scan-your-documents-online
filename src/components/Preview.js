@@ -3,23 +3,16 @@ import Grow from "@material-ui/core/Grow";
 import EditIcon from "@material-ui/icons/Edit";
 import IconButton from "@material-ui/core/IconButton";
 import DeleteIcon from "@material-ui/icons/Delete";
-import {
-  removePhoto,
-  loadEditor,
-  addEditIndex,
-} from "../redux/actions/cameraActions";
-import { useDispatch } from "react-redux";
-import { useState } from "react";
 
 const useStyles = makeStyles((theme) => ({
   previewContainer: {
-    height: 120,
+    height: 148,
     width: 90,
     position: "relative",
     transition: "transform 1s ease, opacity 0.1s ease",
   },
   preview: {
-    height: 85,
+    height: 113,
     width: 85,
     cursor: "pointer",
     position: "absolute",
@@ -46,7 +39,7 @@ const useStyles = makeStyles((theme) => ({
     position: "absolute",
     width: "100%",
     height: 35,
-    top: 85,
+    top: 113,
     left: 0,
   },
   tool: {
@@ -60,52 +53,28 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Preview(props) {
   const classes = useStyles();
-  const dispatch = useDispatch();
-  const [draggedOver, setDraggedOver] = useState(false);
   const handleShowTools = () => {
     props.setSelectedImage(props.index);
   };
   const handleRemovePhoto = () => {
-    setTimeout(() => dispatch(removePhoto(props.index)), 800);
-  };
-  const handleDragEnter = () => {
-    setDraggedOver(true);
-  };
-  const handleDragLeave = () => {
-    setDraggedOver(false);
-  };
-  const handleDragStart = () => {
-    props.setRearrangeOrder({ src: props.index });
-  };
-  const handleDragOver = (e) => {
-    e.preventDefault();
-  };
-  const handleDrop = () => {
-    props.setRearrangeOrder((prev) => ({ ...prev, dest: props.index }));
-    setDraggedOver(false);
+    setTimeout(() => {
+      props.setScannedImages((prev) => {
+        return prev.filter((src, index) => index !== props.index);
+      });
+    }, 500);
   };
   const handleEditPhoto = () => {
-    dispatch(loadEditor(props.src));
-    dispatch(addEditIndex(props.index));
+    props.setEditorData({ src: props.src, editIndex: props.index });
   };
   return (
     <>
       <Grow in={true}>
         <div>
-          <div
-            className={`${classes.previewContainer} ${
-              draggedOver ? "draggedOver" : ""
-            }`}
-          >
+          <div className={classes.previewContainer}>
             <div className={classes.previewNumber}>{props.index + 1}</div>
             <img
               draggable
               onClick={handleShowTools}
-              onDragStart={handleDragStart}
-              onDragEnter={handleDragEnter}
-              onDragOver={handleDragOver}
-              onDrop={handleDrop}
-              onDragLeave={handleDragLeave}
               alt={`Scan ${props.index + 1}`}
               className={`${classes.preview} preview-image`}
               src={props.src}

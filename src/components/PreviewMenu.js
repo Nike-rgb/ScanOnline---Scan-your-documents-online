@@ -2,20 +2,20 @@ import Preview from "./Preview";
 import Paper from "@material-ui/core/Paper";
 import { makeStyles } from "@material-ui/core/styles";
 import Grow from "@material-ui/core/Grow";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import IconButton from "@material-ui/core/IconButton";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import CloseIcon from "@material-ui/icons/Close";
 import SickCat from "../images/sickcat.svg";
-import { moveImages, togglePreviewMenu } from "../redux/actions/cameraActions";
-import { set, clear } from "idb-keyval";
+import { togglePreviewMenu } from "../redux/actions/cameraActions";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
     position: "absolute",
     top: 50,
     right: "2%",
-    height: 310,
+    height: 390,
+    overflow: "hidden",
     zIndex: 4,
     [theme.breakpoints.down("xs")]: {
       height: 425,
@@ -60,7 +60,7 @@ const useStyles = makeStyles((theme) => ({
   },
   emptyIconContainer: {
     padding: 10,
-    top: "14%",
+    top: "20%",
     position: "absolute",
     width: "100%",
     textAlign: "center",
@@ -80,37 +80,17 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function saveToLocal(arr) {
-  if (!arr.length) return;
-  return set("images", arr);
-}
-
 export default function PreviewMenu(props) {
   const classes = useStyles();
   const dispatch = useDispatch();
-  const scannedImages = useSelector((state) => state.camera.scannedImages);
-  useEffect(() => {
-    if (scannedImages.length === 0) return clear();
-    saveToLocal(scannedImages);
-  }, [scannedImages]);
   const [selectedImage, setSelectedImage] = useState(0);
-  const [rearrangeOrder, setRearrangeOrder] = useState({});
   const handleTogglePreviewMenu = () => {
     dispatch(togglePreviewMenu());
   };
-  useEffect(() => {
-    if (
-      "src" in rearrangeOrder &&
-      "dest" in rearrangeOrder &&
-      rearrangeOrder.dest !== rearrangeOrder.src
-    ) {
-      dispatch(moveImages(rearrangeOrder));
-      setRearrangeOrder({});
-    }
-  }, [rearrangeOrder, dispatch]);
+  const scannedImages = props.scannedImages;
   return (
     <>
-      <Grow in={true}>
+      <Grow in={props.previewMenuOpen}>
         <Paper className={classes.paper} elevation={10}>
           <Grow in={scannedImages.length === 0}>
             <div className={classes.emptyIconContainer}>
@@ -134,11 +114,12 @@ export default function PreviewMenu(props) {
             {scannedImages.map((src, index) => (
               <Preview
                 key={`captured_image${index}`}
+                src={src}
                 showTools={selectedImage === index ? true : false}
                 setSelectedImage={setSelectedImage}
                 index={index}
-                src={src}
-                setRearrangeOrder={setRearrangeOrder}
+                setScannedImages={props.setScannedImages}
+                setEditorData={props.setEditorData}
               />
             ))}
           </div>

@@ -4,17 +4,11 @@ import "cropperjs/dist/cropper.css";
 import Backdrop from "@material-ui/core/Backdrop";
 import Button from "@material-ui/core/Button";
 import Paper from "@material-ui/core/Paper";
-import { makeStyles } from "@material-ui/core/styles";
+import { makeStyles, useTheme } from "@material-ui/core/styles";
 import Grow from "@material-ui/core/Grow";
-import {
-  addNewPicture,
-  addEditedPicture,
-  closeEditor,
-  openCamera,
-  removeEditIndex,
-  setAlertMsg,
-} from "../redux/actions/cameraActions";
-import { useDispatch, useSelector } from "react-redux";
+import { setAlertMsg } from "../redux/actions/cameraActions";
+import { useDispatch } from "react-redux";
+import CropFreeIcon from "@material-ui/icons/CropFree";
 
 const useStyles = makeStyles((theme) => ({
   backdrop: {
@@ -29,6 +23,7 @@ const useStyles = makeStyles((theme) => ({
   },
   editorContainer: {
     height: 450,
+    minWidth: 300,
     position: "relative",
     background: "#ffffff42",
     [theme.breakpoints.down("xs")]: {
@@ -51,40 +46,48 @@ const useStyles = makeStyles((theme) => ({
 
 export const Editor = (props) => {
   const classes = useStyles();
+  const theme = useTheme();
   const dispatch = useDispatch();
   const [cropper, setCropper] = useState();
-  const editIndex = useSelector((state) => state.camera.editIndex);
-  const scannedImages = useSelector((state) => state.camera.scannedImages);
-
+  const { src, editIndex } = props.editorData;
+  const scannedImages = props.scannedImages;
   const cleanUp = () => {
-    dispatch(closeEditor());
-    dispatch(removeEditIndex());
+    props.setEditorData({});
+  };
+
+  const replaceWithEdited = (index, src, arr) => {
+    let temp = [...arr];
+    temp.splice(index, 1, src);
+    return temp;
   };
 
   const handleCrop = () => {
     if (typeof cropper !== "undefined") {
       if (editIndex !== null) {
-        dispatch(
-          addEditedPicture(cropper.getCroppedCanvas().toDataURL(), editIndex)
-        );
+        const src = cropper.getCroppedCanvas().toDataURL();
+        props.setScannedImages((prev) => {
+          return replaceWithEdited(editIndex, src, prev);
+        });
       } else {
-        dispatch(setAlertMsg(`${scannedImages.length + 1} photo added.`));
-        dispatch(addNewPicture(cropper.getCroppedCanvas().toDataURL()));
-        dispatch(openCamera());
+        dispatch(
+          setAlertMsg({
+            type: "photoAdd",
+            color: theme.palette.secondary.success,
+            text: `${scannedImages.length + 1} photo added.`,
+          })
+        );
+        props.setScannedImages((prev) => {
+          const src = cropper.getCroppedCanvas().toDataURL();
+          return [...prev, src];
+        });
       }
     }
     cleanUp();
   };
 
   const handleSkip = () => {
-    if (editIndex === null) {
-      dispatch(setAlertMsg(`${scannedImages.length + 1} photo added.`));
-      dispatch(addNewPicture(props.src));
-      dispatch(openCamera());
-    }
     cleanUp();
   };
-
   return (
     <Grow in={true}>
       <Backdrop classes={{ root: classes.backdrop }} open={true}>
@@ -93,31 +96,35 @@ export const Editor = (props) => {
             className={classes.cropper}
             zoomTo={1}
             initialAspectRatio={1}
-            src={props.src}
+            src={src}
             alt={"Image"}
             viewMode={1}
             guides={true}
             minCropBoxHeight={50}
             minCropBoxWidth={50}
             background={false}
-            responsive={true}
             autoCropArea={1}
+            movable={false}
+            rotatable={true}
+            zoomable={false}
             checkOrientation={false}
             onInitialized={(instance) => {
               setCropper(instance);
             }}
           />
           <div className={classes.btns}>
-            <Button color="primary" variant="contained" onClick={handleSkip}>
-              {editIndex !== null ? "Cancel" : "Don't crop"}
-            </Button>
+            {editIndex !== null ? (
+              <Button color="primary" variant="contained" onClick={handleSkip}>
+                Cancel
+              </Button>
+            ) : null}
             <Button
               color="primary"
               style={{ marginLeft: 5 }}
               variant="contained"
               onClick={handleCrop}
             >
-              Crop
+              Crop <CropFreeIcon style={{ position: "relative", left: 5 }} />
             </Button>
           </div>
         </Paper>

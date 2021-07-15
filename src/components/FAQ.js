@@ -37,29 +37,34 @@ const FAQS = [
         documents online.`,
   },
   {
-    question: "Does it work offline?",
+    question: "Fully offline",
     answer: `Yes, it is a fully offline working app. However, you need an internet connection when you load it the 
-        first time duh, and also for ocassional updates. For best offline expericence, add to homescreen. Go give it a try, turn off your internet and reload this page.`,
+        first time duh, and also for ocassional updates. For best offline experience, install app on your device. Go give it a try, 
+        turn off your internet and reload this page.`,
   },
   {
-    question: "My camera is not opening. What should I do?",
-    answer: `Make sure you allow us the permission to use your camera when you first load the app.
-        You can always change it in your browser's settings.`,
+    question: "Fully integrated PDF viewer",
+    answer: `Once you create your PDF, you can preview right here in the app.`,
   },
   {
-    question:
-      "I clicked photos, but accidentally closed the app without making my PDF. How can I recover those pictures?",
-    answer: `You don't need to do anything because we've got you covered. Until you download your PDF, 
+    question: "Clean and clear text reading",
+    answer: `We have selected most suitable effects for the text in your photos to 
+    make it easily readable.`,
+  },
+  {
+    question: "Automatic saving of photos",
+    answer: `Until you download your PDF for the first time, 
         your images are automatically saved and loaded the next time you re-open the app.`,
   },
   {
-    question: "I am concerned about privacy. What if my pictures get leaked?",
-    answer: `We assure you there'll never be such a thing like that. Because our app is serverless, meaning that
-        no data is ever sent to the server, except for some usage statistics for analytics.`,
+    question: "Automatic filling of PDF information",
+    answer: `Don't like us asking for name, roll and so on everytime you make a PDF. We've got you
+    covered with automatic filling of those information from the last time you filled them.`,
   },
   {
-    question: `I don't want to keep filling my information everytime I make a PDF.`,
-    answer: `You don't have to. Your details are automatically loaded from the last time you filled them.`,
+    question: `I am concerned about privacy. What if my photos are leaked?`,
+    answer: `Our app is serverless, and doesn't send data anywhere, except for some usage
+    statistics for analytics`,
   },
   {
     question: "I use the app frequently. Can I add it to my homescreen?",
@@ -68,13 +73,9 @@ const FAQS = [
         favorite apps.`,
   },
   {
-    question: "Will this service be free forever?",
-    answer: `Yes this is a labor of love, and you'll never have to pay a dime, ever.`,
-  },
-  {
     question: "How can I contribute?",
-    answer: `You can contact me at nikeshlepcha7@gmail.com. Buy me a coffee. Also if you are a developer,
-        this project is open source and is on github at https://github.com/Nike-rgb/ScanOnline---Scan-your-documents-online. Go give it a visit and star it.`,
+    answer: `You can contact me at nikeshlepcha7@gmail.com. Also if you are a developer,
+        this project is open source and is on github as 'ScanOnline---Scan-your-documents-online'. Go give it a visit and star it.`,
   },
 ];
 
