@@ -47,7 +47,6 @@ const useStyles = makeStyles((theme) => ({
     },
     [theme.breakpoints.down("xs")]: {
       padding: 6,
-      bottom: "80%",
     },
   },
 }));
@@ -116,28 +115,30 @@ export default function App(props) {
   };
   return (
     <>
-      <Button
-        className={classes.installBtn}
-        variant="contained"
-        color="primary"
-        onClick={handleInstall}
-        style={{ display: defferedEvent ? "flex" : "none" }}
-      >
-        <div
-          style={{
-            color: "gray",
-            position: "absolute",
-            top: "110%",
-            textAlign: "left",
-            width: "300%",
-            right: smallDevice ? "-70%" : "-90%",
-            fontSize: 12,
-          }}
+      {!imagesUploaded && (
+        <Button
+          className={classes.installBtn}
+          variant="contained"
+          color="primary"
+          onClick={handleInstall}
+          style={{ display: defferedEvent ? "flex" : "none" }}
         >
-          Runs offline once installed.
-        </div>
-        <AddIcon style={{ position: "relative", left: -5 }} /> Install
-      </Button>
+          <div
+            style={{
+              color: "gray",
+              position: "absolute",
+              top: "110%",
+              textAlign: "left",
+              width: "300%",
+              right: smallDevice ? "-70%" : "-90%",
+              fontSize: 12,
+            }}
+          >
+            Runs offline once installed.
+          </div>
+          <AddIcon style={{ position: "relative", left: -5 }} /> Install
+        </Button>
+      )}
       <Alert />
       <NavBar
         imagesUploaded={imagesUploaded}

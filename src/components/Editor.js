@@ -65,6 +65,7 @@ export const Editor = (props) => {
     if (typeof cropper !== "undefined") {
       if (editIndex !== null) {
         const src = cropper.getCroppedCanvas().toDataURL();
+        console.log(src);
         props.setScannedImages((prev) => {
           return replaceWithEdited(editIndex, src, prev);
         });
@@ -77,7 +78,7 @@ export const Editor = (props) => {
           })
         );
         props.setScannedImages((prev) => {
-          const src = cropper.getCroppedCanvas().toDataURL();
+          const src = cropper.getCroppedCanvas().toDataURL("image/jpeg");
           return [...prev, src];
         });
       }
