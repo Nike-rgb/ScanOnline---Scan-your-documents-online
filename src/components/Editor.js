@@ -78,7 +78,6 @@ export const Editor = (props) => {
         );
         props.setScannedImages((prev) => {
           const src = cropper.getCroppedCanvas().toDataURL(mimeType);
-          console.log(src);
           return [...prev, src];
         });
       }

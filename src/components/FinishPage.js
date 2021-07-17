@@ -15,7 +15,7 @@ const useStyles = makeStyles((theme) => ({
     width: "60%",
     margin: "auto",
     minWidth: 320,
-    background: "#ffffffa8",
+    background: "#ffffffe6",
     top: 320,
     position: "relative",
     boxSizing: "border-box",

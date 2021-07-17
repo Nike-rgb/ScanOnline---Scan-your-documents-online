@@ -1,14 +1,15 @@
 import React from "react";
-import { makeStyles } from "@material-ui/core/styles";
+import { makeStyles, useTheme } from "@material-ui/core/styles";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
 import ImageIcon from "@material-ui/icons/Image";
 import ContactSupportIcon from "@material-ui/icons/ContactSupport";
 import IconButton from "@material-ui/core/IconButton";
-import { togglePreviewMenu } from "../redux/actions/cameraActions";
+import { togglePreviewMenu, setAlertMsg } from "../redux/actions/cameraActions";
 import { useDispatch } from "react-redux";
 import logo from "../images/logo.png";
+import CropFreeIcon from "@material-ui/icons/CropFree";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -39,12 +40,24 @@ const useStyles = makeStyles((theme) => ({
 export default function Navbar(props) {
   const imagesUploaded = props.imagesUploaded;
   const classes = useStyles();
+  const theme = useTheme();
   const dispatch = useDispatch();
   const handleTogglePreviewMenu = () => {
     dispatch(togglePreviewMenu());
   };
   const handleOpenFaq = () => {
     props.setOpenFaq((prev) => !prev);
+  };
+  const handleOpenQrScanner = () => {
+    if (!navigator.onLine)
+      return dispatch(
+        setAlertMsg({
+          type: "danger",
+          color: theme.palette.secondary.danger,
+          text: "Sorry, you have to be connected to the internet.",
+        })
+      );
+    props.setQRScan((prev) => !prev);
   };
   return (
     <div className={classes.root}>
@@ -53,6 +66,13 @@ export default function Navbar(props) {
           <Typography variant="h6" className={classes.title}>
             <img className={classes.logo} src={logo} alt="Logo" /> ScanOnline
           </Typography>
+          <IconButton
+            className={classes.btn}
+            aria-label="open-qr-scanner"
+            onClick={handleOpenQrScanner}
+          >
+            <CropFreeIcon />
+          </IconButton>
           <IconButton
             className={classes.btn}
             disabled={!imagesUploaded || props.finishing ? true : false}

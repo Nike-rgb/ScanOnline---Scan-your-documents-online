@@ -104,19 +104,19 @@ export default function PreviewMenu(props) {
         setAlertMsg({
           type: "danger",
           color: theme.palette.secondary.danger,
-          text: "Sorry, this is an online exclusive feature.",
+          text: "Sorry, you have to be connected to the internet.",
         })
       );
     } else {
       if (uuid === "") {
         const xhrUuid = new XMLHttpRequest();
-        xhrUuid.open("GET", "http://127.1.1.1:4000/sendUUID");
+        xhrUuid.open("GET", `${process.env.REACT_APP_SERVER_URL}/sendUUID`);
         xhrUuid.send();
         xhrUuid.onload = () => {
           setUuid(xhrUuid.response);
           xhr.open(
             "POST",
-            "http://127.1.1.1:4000/sendImages/" + xhrUuid.response
+            process.env.REACT_APP_SERVER_URL + "/sendImages/" + xhrUuid.response
           );
           xhr.setRequestHeader("Content-Type", "application/json");
           setSharing(true);
@@ -125,7 +125,10 @@ export default function PreviewMenu(props) {
         };
       } else {
         setSharing(true);
-        xhr.open("POST", "http://127.1.1.1:4000/sendImages/" + uuid);
+        xhr.open(
+          "POST",
+          process.env.REACT_APP_SERVER_URL + "/sendImages/" + uuid
+        );
         xhr.setRequestHeader("Content-Type", "application/json");
         xhr.send(JSON.stringify(scannedImages));
       }

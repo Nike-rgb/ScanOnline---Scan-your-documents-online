@@ -22,8 +22,11 @@ import PdfPreview from "./components/PdfPreview";
 import AddIcon from "@material-ui/icons/Add";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
 import qr from "./images/qr.svg";
+import LinearProgress from "@material-ui/core/LinearProgress";
 import ShareIcon from "@material-ui/icons/Share";
 import CropFreeIcon from "@material-ui/icons/CropFree";
+import Backdrop from "@material-ui/core/Backdrop";
+const QRScanner = lazy(() => import("./components/QRScanner"));
 const PdfSettings = lazy(() => import("./components/PdfSettings"));
 
 const useStyles = makeStyles((theme) => ({
@@ -54,9 +57,17 @@ const useStyles = makeStyles((theme) => ({
   },
   qrCode: {
     position: "absolute",
-    right: 5,
+    right: "6%",
     zIndex: -1,
     top: "30%",
+  },
+  backdrop: {
+    zIndex: theme.zIndex.drawer + 1,
+    color: "#fff",
+  },
+  downloadProgress: {
+    width: 300,
+    position: "absolute",
   },
 }));
 
@@ -72,6 +83,9 @@ export default function App(props) {
   const theme = useTheme();
   const smallDevice = useMediaQuery(theme.breakpoints.down("xs"));
   const [imagesUploaded, setImagesUploaded] = useState(false);
+  const [QRScan, setQRScan] = useState(false);
+  const [progress, setProgress] = useState(5);
+  const [downloading, setDownloading] = useState(false);
   const previewMenuOpen = useSelector((state) => state.camera.previewMenuOpen);
   const [editorData, setEditorData] = useState({});
   const [defferedEvent, setDefferedEvent] = useState(null);
@@ -122,8 +136,70 @@ export default function App(props) {
       setDefferedEvent(null);
     }
   };
+  const loadSharedImages = (URL) => {
+    setQRScan(false);
+    const xhr = new XMLHttpRequest();
+    xhr.open("GET", URL);
+    xhr.responseType = "json";
+    xhr.send();
+    setDownloading(true);
+    xhr.onprogress = (e) => {
+      const { loaded, total } = e;
+      const progress = (loaded / total) * 100;
+      setProgress(progress);
+    };
+    xhr.onload = () => {
+      const images = xhr.response;
+      if (!Array.isArray(images))
+        return dispatch(
+          setAlertMsg({
+            type: "danger",
+            color: theme.palette.secondary.danger,
+            text: "Sorry, something went wrong. Try again.",
+          })
+        );
+      setScannedImages((prev) => [...prev, ...images]);
+      setDownloading(false);
+      dispatch(
+        setAlertMsg({
+          type: "success",
+          color: theme.palette.secondary.success,
+          text: `${images.length} photos received`,
+        })
+      );
+    };
+  };
   return (
     <>
+      {downloading && (
+        <Backdrop className={classes.backdrop} open={true}>
+          <div className={classes.downloadProgress}>
+            <div
+              style={{
+                position: "absolute",
+                bottom: "110%",
+                width: "100%",
+                textAlign: "center",
+              }}
+            >
+              Downloading shared photos
+            </div>
+            <LinearProgress
+              className={classes.progress}
+              variant="determinate"
+              value={progress}
+            />
+          </div>
+        </Backdrop>
+      )}
+      <Suspense fallback={<Loading text="Loading QR Scannner" />}>
+        {QRScan && (
+          <QRScanner
+            loadSharedImages={loadSharedImages}
+            setQRScan={setQRScan}
+          />
+        )}
+      </Suspense>
       {!imagesUploaded && (
         <Button
           className={classes.installBtn}
@@ -152,6 +228,7 @@ export default function App(props) {
       <NavBar
         imagesUploaded={imagesUploaded}
         openFaq={openFaq}
+        setQRScan={setQRScan}
         setOpenFaq={setOpenFaq}
         finishing={finishing}
       />

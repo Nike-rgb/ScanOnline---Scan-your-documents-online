@@ -97,7 +97,7 @@ export default function Share(props) {
                   <LinearProgress
                     className={classes.progress}
                     variant="determinate"
-                    value={10}
+                    value={props.progress}
                   />
                 </div>
               )}
