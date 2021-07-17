@@ -49,7 +49,7 @@ export const Editor = (props) => {
   const theme = useTheme();
   const dispatch = useDispatch();
   const [cropper, setCropper] = useState();
-  const { src, editIndex } = props.editorData;
+  const { src, editIndex, mimeType } = props.editorData;
   const scannedImages = props.scannedImages;
   const cleanUp = () => {
     props.setEditorData({});
@@ -64,8 +64,7 @@ export const Editor = (props) => {
   const handleCrop = () => {
     if (typeof cropper !== "undefined") {
       if (editIndex !== null) {
-        const src = cropper.getCroppedCanvas().toDataURL();
-        console.log(src);
+        const src = cropper.getCroppedCanvas().toDataURL(mimeType);
         props.setScannedImages((prev) => {
           return replaceWithEdited(editIndex, src, prev);
         });
@@ -78,7 +77,8 @@ export const Editor = (props) => {
           })
         );
         props.setScannedImages((prev) => {
-          const src = cropper.getCroppedCanvas().toDataURL("image/jpeg");
+          const src = cropper.getCroppedCanvas().toDataURL(mimeType);
+          console.log(src);
           return [...prev, src];
         });
       }

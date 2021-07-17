@@ -20,7 +20,7 @@ export default function Camera(props) {
   const handleChange = async (e) => {
     let files = e.currentTarget.files;
     const options = {
-      maxSizeMB: 0.2,
+      maxSizeMB: 0.1,
       onProgress: function (progressPercent) {
         setProgress(progressPercent);
       },
@@ -32,8 +32,9 @@ export default function Camera(props) {
       setReaderWorking(true);
       const file = await imageCompression(files[0], options);
       const src = await imageCompression.getDataUrlFromFile(file);
+      console.log(src);
       setReaderWorking(false);
-      props.setEditorData({ src, editIndex: null });
+      props.setEditorData({ src, editIndex: null, mimeType: files[0].type });
     }
   };
 

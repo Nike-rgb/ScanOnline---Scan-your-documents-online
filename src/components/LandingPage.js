@@ -25,6 +25,7 @@ const useStyles = makeStyles((theme) => ({
     position: "relative",
     boxSizing: "border-box",
     minWidth: 320,
+    background: "#ffffffa8",
     [theme.breakpoints.down("xs")]: {
       width: "90%",
       height: 200,

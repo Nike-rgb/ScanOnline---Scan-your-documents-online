@@ -21,6 +21,9 @@ import { useTheme } from "@material-ui/core/styles";
 import PdfPreview from "./components/PdfPreview";
 import AddIcon from "@material-ui/icons/Add";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
+import qr from "./images/qr.svg";
+import ShareIcon from "@material-ui/icons/Share";
+import CropFreeIcon from "@material-ui/icons/CropFree";
 const PdfSettings = lazy(() => import("./components/PdfSettings"));
 
 const useStyles = makeStyles((theme) => ({
@@ -48,6 +51,12 @@ const useStyles = makeStyles((theme) => ({
     [theme.breakpoints.down("xs")]: {
       padding: 6,
     },
+  },
+  qrCode: {
+    position: "absolute",
+    right: 5,
+    zIndex: -1,
+    top: "30%",
   },
 }));
 
@@ -174,6 +183,38 @@ export default function App(props) {
         )}
       </Suspense>
       <Camera setEditorData={setEditorData} />
+      <PdfPreview
+        previewOpen={previewOpen}
+        setPreviewOpen={setPreviewOpen}
+        downloadSettings={downloadSettings}
+        scannedImages={scannedImages}
+      />
+      {!finishing && !smallDevice && (
+        <Grow in={true}>
+          <div className={classes.qrCode}>
+            <img height={"400px"} alt="Qr code scanning banner" src={qr} />
+            <div
+              style={{
+                position: "absolute",
+                bottom: "100%",
+                fontSize: 14,
+                width: "90%",
+                left: "5%",
+                textAlign: "center",
+              }}
+            >
+              Now sharing your photos across devices as simple as scanning a QR
+              code. Click on{" "}
+              <ShareIcon
+                style={{ position: "relative", top: 5, fill: "#3bbaea" }}
+              />{" "}
+              on the photos menu, to get started. Then, click on{" "}
+              <CropFreeIcon style={{ position: "relative", top: 5 }} /> on
+              another device to scan the QR code.
+            </div>
+          </div>
+        </Grow>
+      )}
       <Grow in={imagesUploaded}>
         <Typography
           className={classes.instruction2}
@@ -195,12 +236,6 @@ export default function App(props) {
           to edit/delete images
         </Typography>
       </Grow>
-      <PdfPreview
-        previewOpen={previewOpen}
-        setPreviewOpen={setPreviewOpen}
-        downloadSettings={downloadSettings}
-        scannedImages={scannedImages}
-      />
     </>
   );
 }
