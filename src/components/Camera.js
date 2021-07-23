@@ -20,7 +20,7 @@ export default function Camera(props) {
   const handleChange = async (e) => {
     let files = e.currentTarget.files;
     const options = {
-      maxSizeMB: 0.1,
+      maxSizeMB: 0.2,
       onProgress: function (progressPercent) {
         setProgress(progressPercent);
       },

@@ -1,15 +1,13 @@
 import Preview from "./Preview";
 import Paper from "@material-ui/core/Paper";
-import { makeStyles, useTheme } from "@material-ui/core/styles";
+import { makeStyles } from "@material-ui/core/styles";
 import Grow from "@material-ui/core/Grow";
 import { useState } from "react";
 import IconButton from "@material-ui/core/IconButton";
 import { useDispatch } from "react-redux";
 import CloseIcon from "@material-ui/icons/Close";
-import ShareIcon from "@material-ui/icons/Share";
 import SickCat from "../images/sickcat.svg";
-import Share from "./Share";
-import { togglePreviewMenu, setAlertMsg } from "../redux/actions/cameraActions";
+import { togglePreviewMenu } from "../redux/actions/cameraActions";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -84,82 +82,14 @@ const useStyles = makeStyles((theme) => ({
 
 export default function PreviewMenu(props) {
   const classes = useStyles();
-  const theme = useTheme();
   const dispatch = useDispatch();
   const [selectedImage, setSelectedImage] = useState(0);
-  const [uuid, setUuid] = useState("");
-  const [sharing, setSharing] = useState(false);
-  const [progress, setProgress] = useState(5);
-  const [completed, setCompleted] = useState(false);
-  const [URL, setURL] = useState("");
   const handleTogglePreviewMenu = () => {
     dispatch(togglePreviewMenu());
-    handleClose();
   };
   const scannedImages = props.scannedImages;
-  const xhr = new XMLHttpRequest();
-  const handleShareImages = () => {
-    if (!navigator.onLine) {
-      return dispatch(
-        setAlertMsg({
-          type: "danger",
-          color: theme.palette.secondary.danger,
-          text: "Sorry, you have to be connected to the internet.",
-        })
-      );
-    } else {
-      if (uuid === "") {
-        const xhrUuid = new XMLHttpRequest();
-        xhrUuid.open("GET", `${process.env.REACT_APP_SERVER_URL}/sendUUID`);
-        xhrUuid.send();
-        xhrUuid.onload = () => {
-          setUuid(xhrUuid.response);
-          xhr.open(
-            "POST",
-            process.env.REACT_APP_SERVER_URL + "/sendImages/" + xhrUuid.response
-          );
-          xhr.setRequestHeader("Content-Type", "application/json");
-          setSharing(true);
-          xhr.setRequestHeader("Content-Type", "application/json");
-          xhr.send(JSON.stringify(scannedImages));
-        };
-      } else {
-        setSharing(true);
-        xhr.open(
-          "POST",
-          process.env.REACT_APP_SERVER_URL + "/sendImages/" + uuid
-        );
-        xhr.setRequestHeader("Content-Type", "application/json");
-        xhr.send(JSON.stringify(scannedImages));
-      }
-      xhr.onload = (e) => {
-        setCompleted(true);
-        const URL = xhr.response;
-        setURL(URL);
-      };
-      xhr.upload.onprogress = (e) => {
-        const { loaded, total } = e;
-        const progress = (loaded / total) * 100;
-        setProgress(progress);
-      };
-    }
-  };
-  const handleClose = () => {
-    setSharing(false);
-    setCompleted(false);
-    setProgress(5);
-    xhr.abort();
-  };
   return (
     <>
-      {sharing && (
-        <Share
-          URL={URL}
-          completed={completed}
-          handleClose={handleClose}
-          progress={progress}
-        />
-      )}
       <Grow in={props.previewMenuOpen}>
         <Paper className={classes.paper} elevation={10}>
           <Grow in={scannedImages.length === 0}>
@@ -173,9 +103,6 @@ export default function PreviewMenu(props) {
             </div>
           </Grow>
           <div className={classes.closeBtnContainer}>
-            <IconButton aria-label="share-images" onClick={handleShareImages}>
-              <ShareIcon style={{ fill: "#3bbaea" }} />
-            </IconButton>
             <IconButton
               aria-label="close-menu"
               onClick={handleTogglePreviewMenu}

@@ -40,9 +40,7 @@ const styles = {
 };
 
 export default function pdfMarkup(settings, images) {
-  const { name, title, roll, faculty, attributed, effectsOn } = settings
-    ? settings
-    : {};
+  const { name, title, roll, faculty, attributed } = settings ? settings : {};
   return `
         <!DOCTYPE html>
           <html lang="en">
@@ -106,11 +104,9 @@ export default function pdfMarkup(settings, images) {
               images.forEach((src, index) => {
                 imgSection += `
                     <div class="page" style="background: #1c1a3a;overflow-x: hidden; position: relative; border: 3px solid black;">
-                        <img alt="Scanned Image" style="${styles.image} ${
-                  effectsOn
-                    ? "filter:contrast(1.8) brightness(90%) grayscale(100%)"
-                    : ""
-                }" src=${src} />
+                        <img alt="Scanned Image" style="${
+                          styles.image
+                        }" src=${src} />
                         <div style="position: absolute; bottom: 4px; right: ${
                           (index + 1) % 2 ? "5px" : "93%"
                         }; font-size: 16px;    background: white; width: 20px; height: 20px; border-radius: 70%;

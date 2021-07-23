@@ -47,11 +47,6 @@ const FAQS = [
     answer: `Once you create your PDF, you can preview right here in the app.`,
   },
   {
-    question: "Clean and clear text reading",
-    answer: `We have selected most suitable effects for the text in your photos to 
-    make it easily readable.`,
-  },
-  {
     question: "Automatic saving of photos",
     answer: `Until you download your PDF for the first time, 
         your images are automatically saved and loaded the next time you re-open the app.`,
@@ -64,7 +59,12 @@ const FAQS = [
   {
     question: `I am concerned about privacy. What if my photos are leaked?`,
     answer: `Our app is serverless, and doesn't send data anywhere, except for some usage
-    statistics for analytics`,
+    statistics for analytics, and when you wanna share photos.`,
+  },
+  {
+    question: `What's with the whole QR code thing?`,
+    answer: `From v2.0.0, we have introduced lossless sharing of photos across your devices, which is as 
+    simple as creating a QR code, and scanning it on your other device. Needs internet connection.`,
   },
   {
     question: "I use the app frequently. Can I add it to my homescreen?",

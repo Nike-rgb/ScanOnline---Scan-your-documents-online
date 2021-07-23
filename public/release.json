@@ -3,5 +3,8 @@
   "1.3.0": "v1.3.0 \n In app installation now available.",
   "1.3.1": "v1.3.1 \n Excessive PDF size fixed.",
   "1.4.0": "v1.4.0 \n You can now share photos across your devices seamlessly.",
-  "current_version": "1.4.0"
+  "2.0.0": "v2.0.0 \n You can now share photos across your devices with QR code seamlessly.",
+  "2.0.4": "v2.0.2 \n Minor bug fixes.",
+  "2.1.0": "v2.1.0 \n Alternative for QR code scan to support low end devices.",
+  "current_version": "2.1.0"
 }

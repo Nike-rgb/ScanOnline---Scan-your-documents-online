@@ -15,8 +15,6 @@ import byebye from "../images/byebye.svg";
 import { set, get } from "idb-keyval";
 import VisibilityIcon from "@material-ui/icons/Visibility";
 import Grow from "@material-ui/core/Grow";
-import Checkbox from "@material-ui/core/Checkbox";
-import PhotoFilterIcon from "@material-ui/icons/PhotoFilter";
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -184,9 +182,7 @@ export default function PdfSettings(props) {
   const [open, setOpen] = React.useState({});
   const [settings, setSettings] = React.useState({});
   const [title, setTitle] = React.useState(null);
-  const [effectsOn, setEffectsOn] = React.useState(false);
   const steps = ["Title of PDF", "Your Name", "Roll n.o", "Faculty"];
-  steps.length += 1;
   const stepLabels = [
     "This is the title that appears on the front of your pdf (Required)",
     "Your name will help others to know who created it. (optional)",
@@ -226,10 +222,10 @@ export default function PdfSettings(props) {
       const name = nameRef.current.value;
       const roll = rollRef.current.value;
       const faculty = facultyRef.current.value;
-      const settings = { title, name, roll, faculty, effectsOn };
+      const settings = { title, name, roll, faculty };
       setOpen({ settings, status: true });
     }
-  }, [activeStep, steps.length, effectsOn]);
+  }, [activeStep, steps.length]);
 
   React.useEffect(() => {
     (async () => {
@@ -331,27 +327,6 @@ export default function PdfSettings(props) {
               className={classes.formInput}
               placeholder="eg. Science"
             />
-            <div
-              style={{ display: activeStep === 4 ? "block" : "none" }}
-              className={classes.applyEffectsConfirm}
-            >
-              <div
-                style={{
-                  position: "absolute",
-                  bottom: "105%",
-                  width: "100%",
-                  textAlign: "center",
-                }}
-              >
-                <PhotoFilterIcon style={{ fontSize: 60, color: "#ad2faf" }} />
-              </div>
-              Apply effects to your photos to make text more readable?
-              <Checkbox
-                checked={effectsOn}
-                onChange={() => setEffectsOn((prev) => !prev)}
-                inputProps={{ "aria-label": "Apply effects to photos" }}
-              />
-            </div>
           </form>
           <div className={classes.btnContainer}>
             {activeStep !== steps.length ? (
