@@ -140,6 +140,7 @@ export default function App(props) {
       {newFeatures && <NewFeatures currentVersion={"v2.0.0"} />}
       {qrScan && (
         <QRScan
+          setQrScan={setQrScan}
           imagesUploaded={imagesUploaded}
           setScannedImages={setScannedImages}
           scannedImages={scannedImages}

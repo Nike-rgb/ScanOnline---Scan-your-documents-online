@@ -10,18 +10,18 @@ import { useDispatch } from "react-redux";
 import LinearProgress from "@material-ui/core/LinearProgress";
 import CloudUploadIcon from "@material-ui/icons/CloudUpload";
 import CheckCircleOutline from "@material-ui/icons/CheckCircleOutline";
-import QRCodeStyling from "qr-code-styling";
-import { logo2 as logo } from "../services/logo";
-import { QrReader } from "@blackbox-vision/react-qr-reader";
-import Backdrop from "@material-ui/core/Backdrop";
 import pigWait from "../images/pig_wait.svg";
 import frog from "../images/frog.svg";
+import CloseIcon from "@material-ui/icons/Close";
+import IconButton from "@material-ui/core/IconButton";
+import QRCode from "qrcode";
+import CircularProgress from "@material-ui/core/CircularProgress";
 
 const useStyles = makeStyles((theme) => ({
   container: {
     height: 500,
     minHeight: 300,
-    width: 350,
+    width: 300,
     padding: 10,
     left: "50%",
     top: "50%",
@@ -39,6 +39,7 @@ const useStyles = makeStyles((theme) => ({
   },
   heading: {
     textAlign: "center",
+    marginTop: 15,
     color: theme.palette.primary.main,
   },
   description: {
@@ -86,29 +87,9 @@ const useStyles = makeStyles((theme) => ({
     top: "15%",
     textAlign: "center",
   },
-  instruction: {
-    [theme.breakpoints.down("xs")]: {
-      fontSize: 15,
-    },
-  },
   qr: {
-    marginTop: 30,
+    marginTop: 15,
     textAlign: "center",
-  },
-  scannerContainer: {
-    position: "absolute",
-    width: 300,
-  },
-  scanner: {
-    border: "white solid",
-  },
-  viewFinder: {
-    position: "absolute",
-    top: 0,
-    width: "100%",
-    height: "100%",
-    border: "40px solid #00000063",
-    boxShadow: "#6301ffc4 0px 0px 0px 2px inset",
   },
   downloadProgress: {
     position: "absolute",
@@ -137,6 +118,7 @@ const useStyles = makeStyles((theme) => ({
     border: "2px solid black",
     borderRadius: 5,
     padding: 5,
+    width: 200,
   },
   code: {
     letterSpacing: 5,
@@ -147,6 +129,11 @@ const useStyles = makeStyles((theme) => ({
     display: "inline-block",
     color: "#844494",
   },
+  closeBtn: {
+    position: "absolute",
+    right: 5,
+    top: 2,
+  },
 }));
 
 export default function QRScan(props) {
@@ -156,32 +143,21 @@ export default function QRScan(props) {
   const qrRef = useRef();
   const [url, setUrl] = useState();
   const [downloadUrl, setDownloadUrl] = useState("");
+  const [isFetchingUUID, setIsFetchingUUID] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(5);
   const [downloadProgress, setDownloadProgress] = useState(5);
   const [working, setWorking] = useState("");
   const [completed, setCompleted] = useState(false);
   const [openQRScanner, setOpenQRScanner] = useState(false);
-  const [cameraFace] = useState("environment");
   useEffect(() => {
     if (url && completed) {
-      const qrCode = new QRCodeStyling({
-        width: 180,
-        height: 180,
-        type: "svg",
-        data: url,
-        image: logo,
-        dotsOptions: {
-          color: theme.palette.secondary.main,
-          type: "rounded",
-        },
-        backgroundOptions: {
-          color: "#e9ebee",
-        },
-        imageOptions: {
-          margin: 4,
-        },
-      });
-      qrCode.append(qrRef.current);
+      QRCode.toDataURL("I am a pony!", { width: 150 })
+        .then((url) => {
+          qrRef.current.src = url;
+        })
+        .catch((err) => {
+          console.error(err);
+        });
     }
   }, [url, completed, theme.palette.secondary.main]);
   const isOffline = () => !navigator.onLine;
@@ -196,6 +172,7 @@ export default function QRScan(props) {
   };
   const getUUID = () => {
     if (isOffline()) return handleOffline();
+    setIsFetchingUUID(true);
     fetch(`${process.env.REACT_APP_SERVER_URL}/sendUUID`)
       .then((res) => res.text())
       .then((uuid) => props.setUUID(uuid))
@@ -207,7 +184,8 @@ export default function QRScan(props) {
             text: "Sorry something went wrong, try again.",
           })
         );
-      });
+      })
+      .finally(() => setIsFetchingUUID(false));
   };
   const handleSendPhotos = () => {
     if (isOffline()) return handleOffline();
@@ -216,10 +194,10 @@ export default function QRScan(props) {
       "POST",
       `${process.env.REACT_APP_SERVER_URL}/sendImages/${props.UUID}`
     );
-    //xhr.setRequestHeader("content-type", "application/json");
     xhr.upload.onprogress = (e) => {
       const { loaded, total } = e;
       const progress = Math.trunc((loaded / total) * 100);
+      if (progress < 5) return;
       setUploadProgress(progress);
     };
     const data = new FormData();
@@ -235,10 +213,6 @@ export default function QRScan(props) {
     if (isOffline()) return handleOffline();
     setWorking("scanning");
     setOpenQRScanner(true);
-  };
-  const handleClose = () => {
-    setOpenQRScanner(false);
-    setWorking("");
   };
   useEffect(() => {
     if (downloadUrl !== "") {
@@ -284,6 +258,7 @@ export default function QRScan(props) {
       xhr.onprogress = (e) => {
         const { loaded, total } = e;
         const progress = Math.trunc((loaded / total) * 100);
+        if (progress < 5) return;
         setDownloadProgress(progress);
       };
     }
@@ -294,58 +269,70 @@ export default function QRScan(props) {
     theme.palette.secondary.danger,
     theme.palette.secondary.success,
   ]);
+  const createBubble = (char, parent) => {
+    const bubble = document.createElement("div");
+    bubble.className = "bubble";
+    bubble.innerText = char;
+    parent.append(bubble);
+    setTimeout(() => bubble.remove(), 1500);
+  };
   const handleCodeInput = (e) => {
     const input = e.currentTarget;
+    const char = input.value.slice(-1);
+    if (char.codePointAt(0) === 32 || char === "") return;
+    createBubble(char, e.target.parentElement);
     if (input.value.length !== 6) return;
     setDownloadUrl(
       `${process.env.REACT_APP_SERVER_URL}/receiveImages/${input.value}`
     );
   };
+  const handleCloseAll = (e) => {
+    props.setQrScan(false);
+  };
   return (
     <>
-      {working === "scanning" && openQRScanner && (
-        <Backdrop
-          className={classes.backdrop}
-          open={true}
-          onClick={handleClose}
+      <Paper elevation={8} className={classes.container}>
+        <IconButton
+          className={classes.closeBtn}
+          aria-label="close"
+          onClick={handleCloseAll}
         >
-          <div className={classes.scannerContainer}>
-            <QrReader
-              constraints={{ facingMode: cameraFace }}
-              className={classes.scanner}
-              onResult={(result, error) => {
-                if (!!result) {
-                  setDownloadUrl(result?.text);
-                }
-              }}
-              style={{ width: "100%" }}
-            />
-            <div className={classes.viewFinder}></div>
-            <div
+          <CloseIcon style={{ fontSize: 30 }} />
+        </IconButton>
+        {working === "scanning" && openQRScanner && (
+          <div
+            style={{
+              position: "absolute",
+              width: "80%",
+              left: "10%",
+              height: "100%",
+              textAlign: "center",
+              fontSize: 14,
+            }}
+          >
+            <img
+              src={frog}
               style={{
                 position: "absolute",
-                top: "105%",
-                width: "100%",
-                textAlign: "center",
-                fontSize: 14,
+                left: "5%",
+                top: "20%",
+                width: "90%",
               }}
-            >
-              Scan the QR code. Tap anywhere to cancel.
-              <br></br>
-              Or if your camera isn't working, put the code from the sender
-              below:<br></br>
-              <br></br>
+              alt={"Frog on a leaf"}
+            />
+            <div style={{ position: "absolute", top: "70%" }}>
               <input
                 placeholder="Code here please."
                 onClick={(e) => e.stopPropagation()}
                 className={classes.codeInput}
                 onChange={handleCodeInput}
               />
+              <br></br>
+              <br></br>
+              Put the code from the sender above:
             </div>
           </div>
-        </Backdrop>
-      )}
-      <Paper elevation={8} className={classes.container}>
+        )}
         <h4 className={classes.heading}>Share your photos!</h4>
         {!working && (
           <>
@@ -379,8 +366,8 @@ export default function QRScan(props) {
               )}
               {completed && (
                 <>
-                  <div className={classes.instruction}>
-                    Scan the following QR code from any other device<br></br>
+                  <div style={{ fontSize: 15 }}>
+                    Scan the following QR code<br></br>
                     <span style={{ fontSize: 14, fontWeight: "bold" }}>
                       (Valid for next 3 minutes only).
                     </span>
@@ -392,7 +379,9 @@ export default function QRScan(props) {
                       fontSize: 40,
                     }}
                   />
-                  <div className={classes.qr} ref={qrRef}></div>
+                  <div className={classes.qr}>
+                    <img alt="qr code to scan" ref={qrRef} />
+                  </div>
                   <div className={classes.code}>{props.UUID}</div>
                 </>
               )}
@@ -467,14 +456,19 @@ export default function QRScan(props) {
             </>
           )}
           {!props.UUID && (
-            <Button
-              className={classes.btn}
-              onClick={getUUID}
-              variant="contained"
-              color="primary"
-            >
-              Get Started
-            </Button>
+            <>
+              {!isFetchingUUID && (
+                <Button
+                  className={classes.btn}
+                  onClick={getUUID}
+                  variant="contained"
+                  color="primary"
+                >
+                  Get Started
+                </Button>
+              )}
+              {isFetchingUUID && <CircularProgress />}
+            </>
           )}
         </div>
       </Paper>

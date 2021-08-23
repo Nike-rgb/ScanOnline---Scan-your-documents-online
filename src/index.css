@@ -55,3 +55,21 @@ body,
     transform: scale(1.2);
   }
 }
+
+@keyframes showAndFade {
+  100% {
+    opacity: 0;
+  }
+}
+
+.bubble {
+  position: absolute;
+  width: 50px;
+  text-align: center;
+  padding: 10px;
+  background: gray;
+  color: white;
+  bottom: 105%;
+  left: 42%;
+  animation: showAndFade 1.5s ease;
+}
