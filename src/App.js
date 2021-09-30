@@ -23,6 +23,8 @@ import useMediaQuery from "@material-ui/core/useMediaQuery";
 import PdfSettings from "./components/PdfSettings";
 import QRScan from "./components/QRScan";
 import NewFeatures from "./components/NewFeatures";
+import dashain from "./images/dashain.jpg";
+import { useParams } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
   instruction2: {
@@ -73,11 +75,14 @@ function saveToLocal(arr, imagesUploaded) {
 }
 
 export default function App(props) {
+  const params = useParams();
+  const sharing = params.downloadCode ? true : false;
+  const [downloadCodeUsed, setDownloadCodeUsed] = useState(false);
   const classes = useStyles();
   const dispatch = useDispatch();
   const theme = useTheme();
   const smallDevice = useMediaQuery(theme.breakpoints.down("xs"));
-  const [newFeatures, setNewFeatures] = useState(false);
+  const [newFeatures, setNewFeatures] = useState(!sharing);
   const [imagesUploaded, setImagesUploaded] = useState(false);
   const previewMenuOpen = useSelector((state) => state.camera.previewMenuOpen);
   const [editorData, setEditorData] = useState({});
@@ -86,7 +91,7 @@ export default function App(props) {
   const [finishing, setFinishing] = useState(false);
   const [openFaq, setOpenFaq] = useState(false);
   const [previewOpen, setPreviewOpen] = useState(false);
-  const [qrScan, setQrScan] = useState(false);
+  const [qrScan, setQrScan] = useState(params.downloadCode ? true : false);
   const [UUID, setUUID] = useState(null);
   const downloadSettings = useSelector(
     (state) => state.camera.downloadSettings
@@ -105,7 +110,7 @@ export default function App(props) {
         .then((result) => result.json())
         .then((release) => {
           const currentVersion = release.current_version;
-          setNewFeatures(true);
+          setNewFeatures(true); //set to false if there's no update
           dispatch(
             setAlertMsg({
               type: "update",
@@ -137,7 +142,7 @@ export default function App(props) {
   };
   return (
     <>
-      {newFeatures && <NewFeatures currentVersion={"v2.0.0"} />}
+      {newFeatures && <NewFeatures img={dashain} currentVersion={"v2.0.0"} />}
       {qrScan && (
         <QRScan
           setQrScan={setQrScan}
@@ -146,6 +151,9 @@ export default function App(props) {
           scannedImages={scannedImages}
           UUID={UUID}
           setUUID={setUUID}
+          downloadCode={params.downloadCode}
+          setDownloadCodeUsed={setDownloadCodeUsed}
+          downloadCodeUsed={downloadCodeUsed}
         />
       )}
       {!imagesUploaded && (
@@ -180,7 +188,9 @@ export default function App(props) {
         finishing={finishing}
         toggleQrScanner={toggleQrScanner}
       />
-      {!imagesUploaded && <LandingPage setScannedImages={setScannedImages} />}
+      {!imagesUploaded && (
+        <LandingPage sharing={sharing} setScannedImages={setScannedImages} />
+      )}
       <PreviewMenu
         previewMenuOpen={previewMenuOpen}
         scannedImages={scannedImages}

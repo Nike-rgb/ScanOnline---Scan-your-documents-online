@@ -3,9 +3,8 @@ import Paper from "@material-ui/core/Paper";
 import qr from "../images/qr.svg";
 import Button from "@material-ui/core/Button";
 import PhotoSizeSelectActualIcon from "@material-ui/icons/PhotoSizeSelectActual";
-import SettingsOverscanIcon from "@material-ui/icons/SettingsOverscan";
 import { useState, useEffect, useRef } from "react";
-import { setAlertMsg } from "../redux/actions/cameraActions";
+import { setAlertMsg, setNewPhotosAdded } from "../redux/actions/cameraActions";
 import { useDispatch } from "react-redux";
 import LinearProgress from "@material-ui/core/LinearProgress";
 import CloudUploadIcon from "@material-ui/icons/CloudUpload";
@@ -16,6 +15,7 @@ import CloseIcon from "@material-ui/icons/Close";
 import IconButton from "@material-ui/core/IconButton";
 import QRCode from "qrcode";
 import CircularProgress from "@material-ui/core/CircularProgress";
+import DeveloperModeIcon from "@material-ui/icons/DeveloperMode";
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -88,7 +88,7 @@ const useStyles = makeStyles((theme) => ({
     textAlign: "center",
   },
   qr: {
-    marginTop: 15,
+    marginTop: 5,
     textAlign: "center",
   },
   downloadProgress: {
@@ -142,7 +142,13 @@ export default function QRScan(props) {
   const dispatch = useDispatch();
   const qrRef = useRef();
   const [url, setUrl] = useState();
-  const [downloadUrl, setDownloadUrl] = useState("");
+  const [downloadUrl, setDownloadUrl] = useState(
+    props.downloadCode && !props.downloadCodeUsed
+      ? `${
+          process.env.REACT_APP_SERVER_URL
+        }/receiveImages/${props.downloadCode.toLowerCase()}`
+      : ""
+  );
   const [isFetchingUUID, setIsFetchingUUID] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(5);
   const [downloadProgress, setDownloadProgress] = useState(5);
@@ -151,7 +157,7 @@ export default function QRScan(props) {
   const [openQRScanner, setOpenQRScanner] = useState(false);
   useEffect(() => {
     if (url && completed) {
-      QRCode.toDataURL("I am a pony!", { width: 150 })
+      QRCode.toDataURL(url, { width: 150 })
         .then((url) => {
           qrRef.current.src = url;
         })
@@ -206,7 +212,7 @@ export default function QRScan(props) {
     setWorking("uploading");
     xhr.onload = () => {
       setCompleted(true);
-      setUrl(xhr.response);
+      setUrl(`${process.env.REACT_APP_APP_URL}/shared/${props.UUID}`);
     };
   };
   const handleQRCode = () => {
@@ -216,16 +222,6 @@ export default function QRScan(props) {
   };
   useEffect(() => {
     if (downloadUrl !== "") {
-      if (!downloadUrl.startsWith(process.env.REACT_APP_SERVER_URL)) {
-        dispatch(
-          setAlertMsg({
-            type: "danger",
-            color: theme.palette.secondary.danger,
-            text: "Invalid QR code.",
-          })
-        );
-        return setWorking("");
-      }
       setWorking("downloading");
       const xhr = new XMLHttpRequest();
       xhr.open("GET", downloadUrl);
@@ -243,6 +239,7 @@ export default function QRScan(props) {
               text: `${images.length} photos added.`,
             })
           );
+          dispatch(setNewPhotosAdded(true));
         } catch (err) {
           dispatch(
             setAlertMsg({
@@ -253,7 +250,9 @@ export default function QRScan(props) {
           );
           setWorking();
           setDownloadUrl("");
+          props.setQrScan(false);
         }
+        if (!props.downloadCodeUsed) props.setDownloadCodeUsed(true);
       };
       xhr.onprogress = (e) => {
         const { loaded, total } = e;
@@ -283,12 +282,15 @@ export default function QRScan(props) {
     createBubble(char, e.target.parentElement);
     if (input.value.length !== 6) return;
     setDownloadUrl(
-      `${process.env.REACT_APP_SERVER_URL}/receiveImages/${input.value}`
+      `${
+        process.env.REACT_APP_SERVER_URL
+      }/receiveImages/${input.value.toLowerCase()}`
     );
   };
   const handleCloseAll = (e) => {
     props.setQrScan(false);
   };
+
   return (
     <>
       <Paper elevation={8} className={classes.container}>
@@ -303,8 +305,8 @@ export default function QRScan(props) {
           <div
             style={{
               position: "absolute",
-              width: "80%",
-              left: "10%",
+              width: "70%",
+              left: "15%",
               height: "100%",
               textAlign: "center",
               fontSize: 14,
@@ -367,7 +369,21 @@ export default function QRScan(props) {
               {completed && (
                 <>
                   <div style={{ fontSize: 15 }}>
-                    Scan the following QR code<br></br>
+                    Go the following link or use the code below.
+                    <br></br>
+                    <a href={`${url}`}>
+                      <span
+                        style={{
+                          color: "gray",
+                          overflowWrap: "anywhere",
+                          textDecoration: "underline",
+                        }}
+                      >
+                        {url}
+                      </span>
+                    </a>
+                    <br></br>
+                    <br></br>
                     <span style={{ fontSize: 14, fontWeight: "bold" }}>
                       (Valid for next 3 minutes only).
                     </span>
@@ -376,7 +392,7 @@ export default function QRScan(props) {
                   <CheckCircleOutline
                     style={{
                       fill: theme.palette.secondary.success,
-                      fontSize: 40,
+                      fontSize: 30,
                     }}
                   />
                   <div className={classes.qr}>
@@ -420,7 +436,7 @@ export default function QRScan(props) {
                   />
                   <br></br>
                   <br></br>
-                  You have successfully transferred photos to this device.
+                  Transfer successful. You can close this menu.
                 </div>
               </>
             )}
@@ -448,8 +464,8 @@ export default function QRScan(props) {
                 color="primary"
                 onClick={handleQRCode}
               >
-                Scan the code{" "}
-                <SettingsOverscanIcon
+                Enter the code{" "}
+                <DeveloperModeIcon
                   style={{ position: "relative", top: 7, left: 5 }}
                 />
               </Button>
@@ -457,7 +473,7 @@ export default function QRScan(props) {
           )}
           {!props.UUID && (
             <>
-              {!isFetchingUUID && (
+              {!isFetchingUUID && working !== "downloading" && (
                 <Button
                   className={classes.btn}
                   onClick={getUUID}

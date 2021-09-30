@@ -9,17 +9,23 @@ import theme from "./theme/theme";
 import * as serviceWorker from "./serviceWorkerRegistration";
 import Update from "./components/Update";
 import packageJson from "../package.json";
+import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 global.appVersion = packageJson.version;
 
 ReactDOM.render(
   <>
-    <ThemeProvider theme={theme}>
-      <Provider store={store}>
-        <Update appVersion={global.appVersion} />
-        <App />
-      </Provider>
-      ,
-    </ThemeProvider>
+    <Router>
+      <ThemeProvider theme={theme}>
+        <Provider store={store}>
+          <Update appVersion={global.appVersion} />
+          <Switch>
+            <Route path="/shared/:downloadCode" children={<App />} />
+            <Route path="/" children={<App />} />
+          </Switch>
+        </Provider>
+        ,
+      </ThemeProvider>
+    </Router>
   </>,
   document.getElementById("root")
 );

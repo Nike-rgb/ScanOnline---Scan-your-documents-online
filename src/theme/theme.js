@@ -19,6 +19,7 @@ const theme = createMuiTheme({
       danger: "#f11010",
       extraText: "#000",
       update: "#72ca30",
+      notification: "#2bb5e4",
     },
   },
 });

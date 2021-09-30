@@ -96,7 +96,6 @@ export default function CacheValidator(props) {
         const latestVersion = meta.version;
         const currentVersion = props.appVersion;
         const shouldForceRefresh = SemVer.gt(latestVersion, currentVersion);
-        console.log(latestVersion, currentVersion, shouldForceRefresh);
         if (shouldForceRefresh) {
           localStorage.setItem("update", latestVersion);
           console.log(
@@ -104,10 +103,6 @@ export default function CacheValidator(props) {
           );
           setRefresh(true);
           setLatestVersion(latestVersion);
-        } else {
-          console.log(
-            `You already have the latest version - ${latestVersion}. No cache refresh needed.`
-          );
         }
       });
   }, [props.appVersion]);

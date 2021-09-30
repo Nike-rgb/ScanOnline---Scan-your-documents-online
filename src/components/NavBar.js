@@ -6,10 +6,14 @@ import Typography from "@material-ui/core/Typography";
 import ImageIcon from "@material-ui/icons/Image";
 import ContactSupportIcon from "@material-ui/icons/ContactSupport";
 import IconButton from "@material-ui/core/IconButton";
-import { togglePreviewMenu } from "../redux/actions/cameraActions";
-import { useDispatch } from "react-redux";
+import {
+  togglePreviewMenu,
+  setNewPhotosAdded,
+} from "../redux/actions/cameraActions";
+import { useDispatch, useSelector } from "react-redux";
 import logo from "../images/logo.png";
 import CropFreeIcon from "@material-ui/icons/CropFree";
+import Badge from "@material-ui/core/Badge";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -32,22 +36,28 @@ const useStyles = makeStyles((theme) => ({
   btn: {
     color: "white",
   },
-  numberBadge: {
-    background: theme.palette.secondary.icon,
+  badgeRoot: {
+    position: "absolute",
+    top: 15,
+    left: "80%",
+  },
+  badge: {
+    backgroundColor: theme.palette.secondary.notification,
   },
 }));
 
 export default function Navbar(props) {
   const imagesUploaded = props.imagesUploaded;
   const classes = useStyles();
+  const newPhotosAdded = useSelector((state) => state.camera.newPhotosAdded);
   const dispatch = useDispatch();
   const handleTogglePreviewMenu = () => {
     dispatch(togglePreviewMenu());
+    if (newPhotosAdded) dispatch(setNewPhotosAdded(false));
   };
   const handleOpenFaq = () => {
     props.setOpenFaq((prev) => !prev);
   };
-
   const handleOpenQr = () => {
     props.toggleQrScanner();
   };
@@ -69,11 +79,18 @@ export default function Navbar(props) {
           </IconButton>
           <IconButton
             className={classes.btn}
+            style={{ position: "relative" }}
             disabled={!imagesUploaded || props.finishing ? true : false}
             aria-label="open-captured-images"
             onClick={handleTogglePreviewMenu}
           >
             <ImageIcon />
+            <Badge
+              color="secondary"
+              variant="dot"
+              classes={{ root: classes.badgeRoot, badge: classes.badge }}
+              invisible={!newPhotosAdded}
+            ></Badge>
           </IconButton>
           <IconButton
             className={classes.btn}

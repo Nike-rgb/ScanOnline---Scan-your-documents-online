@@ -57,3 +57,10 @@ export function setDownloadSettings(settings) {
     data: settings,
   };
 }
+
+export function setNewPhotosAdded(boolean) {
+  return {
+    type: actionTypes.SET_NEW_PHOTOS_ADDED,
+    data: boolean
+  };
+}

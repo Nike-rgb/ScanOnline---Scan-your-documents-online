@@ -35,7 +35,6 @@ export default function Camera(props) {
       setReaderWorking(false);
       props.setEditorData({ src, editIndex: null, mimeType: files[0].type });
       e.target.value = null;
-      console.log(e);
     }
   };
 

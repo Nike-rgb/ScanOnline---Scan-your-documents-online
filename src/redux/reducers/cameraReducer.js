@@ -56,6 +56,11 @@ export default function cameraReducers(state = initialState, action) {
         ...state,
         downloadSettings: action.data,
       };
+    case actionTypes.SET_NEW_PHOTOS_ADDED:
+      return {
+        ...state,
+        newPhotosAdded: action.data,
+      };
     default:
       return state;
   }

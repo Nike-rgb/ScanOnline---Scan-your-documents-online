@@ -25,7 +25,8 @@ const useStyles = makeStyles((theme) => ({
   features: {
     position: "absolute",
     bottom: 25,
-    width: "100%",
+    width: "96%",
+    padding: 5,
   },
   feature: {
     color: theme.palette.secondary.success,
@@ -43,12 +44,16 @@ const useStyles = makeStyles((theme) => ({
 export default function NewFeatures(props) {
   const classes = useStyles();
   const [show, setShow] = useState(true);
+  const notifText = "Happy Dashain!!!"
   const features = [
     "Share your photos across devices",
     "Seamless QR code scanning",
     "Lossless sharing",
   ];
   const img = qr;
+  const imgClipPath = `
+  polygon(12% 20%, 99% 9%, 88% 46%, 106% 100%, 25% 100%, 0% 60%, 0% 20%)
+  `;
   const handleClose = () => {
     setShow(false);
   };
@@ -56,11 +61,13 @@ export default function NewFeatures(props) {
     <>
       {show && (
         <Paper elevation={10} className={classes.container}>
-          <h4 style={{ textAlign: "center", padding: 5 }}>
-            What's new in {props.currentVersion}
+          <h4 style={{ textAlign: "center", paddingTop: 15 }}>
+            {notifText? notifText : `What's new in ${props.currentVersion}`}
           </h4>
-          <img alt="" className={classes.img} src={img} />
-          <ul className={classes.features}>
+          <img alt="" className={classes.img} style={{clipPath: props.img? imgClipPath: ''}} src={props.img? props.img : img} />
+          {notifText? (<div style={{textAlign: 'right', color: 'crimson'}} className={classes.features}>Enjoy with your family and friends, 
+          the holy festival of dashain. <br></br> -ScanOnline Team</div>) : 
+            (<ul className={classes.features}>
             {features.map((feature, index) => {
               return (
                 <li key={`feature_${index}`} className={classes.feature}>
@@ -68,7 +75,8 @@ export default function NewFeatures(props) {
                 </li>
               );
             })}
-          </ul>
+          </ul>)
+          }
           <IconButton
             className={classes.closeBtn}
             aria-label="close"

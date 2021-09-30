@@ -130,7 +130,7 @@ export default function LandingPage(props) {
   return (
     <>
       <Dialog
-        open={Boolean(open.open)}
+        open={Boolean(open.open) && !props.sharing}
         classes={{ paper: classes.alert }}
         TransitionComponent={Transition}
         transitionDuration={200}
