@@ -7,6 +7,7 @@ import CloseIcon from "@material-ui/icons/Close";
 import IconButton from "@material-ui/core/IconButton";
 import { del } from "idb-keyval";
 import GetAppIcon from "@material-ui/icons/GetApp";
+import KeyboardArrowDownOutlinedIcon from "@material-ui/icons/KeyboardArrowDownOutlined";
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -47,6 +48,12 @@ const useStyles = makeStyles((theme) => ({
     [theme.breakpoints.down("xs")]: {
       right: 10,
     },
+  },
+  downArrowContainer: {
+    position: "absolute",
+    top: "85%",
+    right: "5%",
+    animation: "strobeAndDisappear 6s ease forwards",
   },
 }));
 
@@ -94,6 +101,9 @@ export default function PdfPreview(props) {
             >
               <CloseIcon />
             </IconButton>
+          </div>
+          <div className={classes.downArrowContainer}>
+            <KeyboardArrowDownOutlinedIcon style={{ fontSize: 50 }} />
           </div>
           <iframe
             className={classes.iframe}
